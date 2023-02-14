@@ -1,0 +1,3 @@
+plugins/module_utils/repo_setup/utils.py replace-urlopen
+plugins/module_utils/repo_setup/utils.py pylint:ansible-bad-import
+plugins/module_utils/repo_setup/yum_config/compose_repos.py replace-urlopen

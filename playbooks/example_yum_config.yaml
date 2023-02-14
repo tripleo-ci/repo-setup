@@ -1,0 +1,33 @@
+---
+- name: Example usage for repo_setup.repos.yum_config ansible module
+  hosts: localhost
+  tasks:
+    - name: Enable appstream yum repo and set exclude packages
+      become: true
+      repo_setup.repos.yum_config:
+        type: repo
+        name: appstream
+        enabled: true
+        set_options:
+          exclude:
+            - nodejs*
+            - mariadb*
+
+    - name: Enable and install nginx module
+      become: true
+      repo_setup.repos.yum_config:
+        type: module
+        name: nginx
+        enabled: true
+        operation: install
+        profile: common
+        stream: mainline
+
+    - name: Set yum global options in dnf.conf
+      become: true
+      repo_setup.repos.yum_config:
+        type: global
+        file_path: /etc/dnf/dnf.conf
+        set_options:
+          skip_if_unavailable: "False"
+          keepcache: "0"
