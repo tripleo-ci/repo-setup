@@ -27,8 +27,8 @@ import repo_setup.yum_config.utils as utils
 import repo_setup.yum_config.yum_config as yum_cfg
 
 
-class TestTripleoYumConfigBase(unittest.TestCase):
-    """Base test class for tripleo yum config module."""
+class TestYumConfigBase(unittest.TestCase):
+    """Base test class for yum config module."""
 
     def mock_object(self, obj, attr, new_attr=None):
         if not new_attr:
@@ -43,10 +43,10 @@ class TestTripleoYumConfigBase(unittest.TestCase):
 
 
 @ddt.ddt
-class TestTripleoYumConfigMain(TestTripleoYumConfigBase):
+class TestYumConfigMain(TestYumConfigBase):
     """Test class for main method operations."""
     def setUp(self):
-        super(TestTripleoYumConfigMain, self).setUp()
+        super(TestYumConfigMain, self).setUp()
         self.mock_object(utils, 'get_distro_info',
                          mock.Mock(return_value=("centos", "8", None)))
 
@@ -60,7 +60,7 @@ class TestTripleoYumConfigMain(TestTripleoYumConfigBase):
         mock_update_section = self.mock_object(yum_repo_obj,
                                                'add_or_update_section')
         mock_yum_repo_obj = self.mock_object(
-            yum_cfg, 'TripleOYumRepoConfig',
+            yum_cfg, 'YumRepoConfig',
             mock.Mock(return_value=yum_repo_obj))
 
         main.main()
@@ -83,7 +83,7 @@ class TestTripleoYumConfigMain(TestTripleoYumConfigBase):
         mock_update_all_sections = self.mock_object(
             yum_repo_obj, 'add_or_update_all_sections_from_url')
         mock_yum_repo_obj = self.mock_object(
-            yum_cfg, 'TripleOYumRepoConfig',
+            yum_cfg, 'YumRepoConfig',
             mock.Mock(return_value=yum_repo_obj))
 
         main.main()
@@ -118,7 +118,7 @@ class TestTripleoYumConfigMain(TestTripleoYumConfigBase):
         mock_update_section = self.mock_object(
             yum_global_obj, 'update_section')
         mock_yum_global_obj = self.mock_object(
-            yum_cfg, 'TripleOYumGlobalConfig',
+            yum_cfg, 'YumGlobalConfig',
             mock.Mock(return_value=yum_global_obj))
 
         main.main()
@@ -175,7 +175,7 @@ class TestTripleoYumConfigMain(TestTripleoYumConfigBase):
         ]
         repos_obj = mock.Mock()
         mock_yum_global_obj = self.mock_object(
-            repos, 'TripleOYumComposeRepoConfig',
+            repos, 'YumComposeRepoConfig',
             mock.Mock(return_value=repos_obj))
         mock_enable_composes = self.mock_object(
             repos_obj, 'enable_compose_repos')

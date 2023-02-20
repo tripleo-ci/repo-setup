@@ -1,5 +1,0 @@
----
-features:
-  - |
-    repo-setup now runs with the --stream argument enabled by default. Use
-    the --no-stream argument when using repo-setup without CentOS stream.

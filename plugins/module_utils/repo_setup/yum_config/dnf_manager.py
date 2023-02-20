@@ -11,7 +11,7 @@
 #  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #  License for the specific language governing permissions and limitations
 #  under the License.
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 import logging
 
 
@@ -24,6 +24,7 @@ class DnfModuleManager:
     def __init__(self):
         # lazy import to allow CLI to start without dnf
         import dnf
+
         self.base = dnf.Base()
         self.base.conf.read()
         self.base.conf.best = True
@@ -35,9 +36,9 @@ class DnfModuleManager:
         """Return a module spec string based on stream and/or profile."""
         module_spec = name
         if stream:
-            module_spec += ':{0}'.format(stream)
+            module_spec += ":{0}".format(stream)
         if profile:
-            module_spec += '/{0}'.format(profile)
+            module_spec += "/{0}".format(profile)
         return module_spec
 
     def _do_transaction(self):
@@ -45,8 +46,7 @@ class DnfModuleManager:
         try:
             self.base.do_transaction()
         except RuntimeError:
-            logging.error('This command has to be run with superuser '
-                          'privileges.')
+            logging.error("This command has to be run with superuser " "privileges.")
             raise
 
     def enable_module(self, name, stream=None, profile=None):

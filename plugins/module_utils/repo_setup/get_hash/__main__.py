@@ -18,59 +18,53 @@ import argparse
 import logging
 import sys
 from repo_setup.utils import load_logging
-from repo_setup.get_hash.repo_setup_hash_info import TripleOHashInfo
+from repo_setup.get_hash.hash_info import HashInfo
 import repo_setup.get_hash.exceptions as exc
 
 
 def _validate_args(parsed_args):
-    if parsed_args.os_version == 'centos7' and (
-        parsed_args.component is not None
-    ):
-        raise exc.TripleOHashInvalidParameter(
-            'Cannot specify component for centos 7'
-        )
+    if parsed_args.os_version == "centos7" and (parsed_args.component is not None):
+        raise exc.HashInvalidParameter("Cannot specify component for centos 7")
 
 
 def main():
     load_logging(module_name="repo-setup-get-hash")
-    config = TripleOHashInfo.load_config()
-    parser = argparse.ArgumentParser(description='repo-setup-get-hash.py')
+    config = HashInfo.load_config()
+    parser = argparse.ArgumentParser(description="repo-setup-get-hash.py")
     parser.add_argument(
-        '--component',
-        help=('Use this to specify a component '
-              'This is NOT valid for Centos 7.'),
-        choices=config['repo_setup_ci_components'],
+        "--component",
+        help=("Use this to specify a component " "This is NOT valid for Centos 7."),
+        choices=config["repo_setup_ci_components"],
     )
     parser.add_argument(
-        '--dlrn-url',
+        "--dlrn-url",
         help=(
-            'The URL for the delorean server to use. Defaults to '
-            'https://trunk.rdoproject.org'
+            "The URL for the delorean server to use. Defaults to "
+            "https://trunk.rdoproject.org"
         ),
     )
     parser.add_argument(
-        '--os-version',
-        default='centos8',
-        choices=config['os_versions'],
-        help=('The operating system and version to fetch the build tag for'),
+        "--os-version",
+        default="centos8",
+        choices=config["os_versions"],
+        help=("The operating system and version to fetch the build tag for"),
     )
     parser.add_argument(
-        '--tag',
-        default='current-tripleo',
-        choices=config['rdo_named_tags'],
-        help=('The known tag to retrieve the hash_info for'),
+        "--tag",
+        default="current-tripleo",
+        choices=config["rdo_named_tags"],
+        help=("The known tag to retrieve the hash_info for"),
     )
     parser.add_argument(
-        '--release',
-        default='master',
-        help=('The release of OpenStack you want the hash info for. '
-              'Default master'),
-        choices=config['repo_setup_releases'],
+        "--release",
+        default="master",
+        help=("The release of OpenStack you want the hash info for. " "Default master"),
+        choices=config["repo_setup_releases"],
     )
     parser.add_argument(
-        '--verbose',
-        action='store_true',
-        help=('Enable verbose log level for debugging'),
+        "--verbose",
+        action="store_true",
+        help=("Enable verbose log level for debugging"),
     )
 
     args = parser.parse_args()
@@ -83,14 +77,12 @@ def main():
     if args.dlrn_url is not None:
         logging.debug(
             "Overriding configuration dlrn_url. Original value {}. "
-            "New value {}".format(config['dlrn_url'], args.dlrn_url)
+            "New value {}".format(config["dlrn_url"], args.dlrn_url)
         )
-        config['dlrn_url'] = args.dlrn_url
-        logging.debug(
-            "Proceeding with the following configuration: {}".format(config)
-        )
+        config["dlrn_url"] = args.dlrn_url
+        logging.debug("Proceeding with the following configuration: {}".format(config))
 
-    repo_setup_hash_info = TripleOHashInfo(
+    repo_setup_hash_info = HashInfo(
         args.os_version,
         args.release,
         args.component,

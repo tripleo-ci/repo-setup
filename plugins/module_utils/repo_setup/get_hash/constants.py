@@ -13,7 +13,7 @@
 #   under the License.
 #
 #
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
@@ -24,18 +24,18 @@ These are the keys we expect to find in a well-formed config.yaml
 If any keys are missing from the configuration hash resolution doesn't proceed.
 """
 CONFIG_KEYS = [
-    'dlrn_url',
-    'repo_setup_releases',
-    'repo_setup_ci_components',
-    'rdo_named_tags',
-    'os_versions',
+    "dlrn_url",
+    "repo_setup_releases",
+    "repo_setup_ci_components",
+    "rdo_named_tags",
+    "os_versions",
 ]
 
 """
 This is the path that we expect to find the system installed config.yaml.
 The path is specified in [options.data_files] of the project setup.cfg.
 """
-CONFIG_PATH = '/usr/local/etc/repo_setup_get_hash/config.yaml'
+CONFIG_PATH = "/usr/local/etc/repo_setup_get_hash/config.yaml"
 
 DEFAULT_CONFIG = {
     "repo_setup_releases": [
@@ -50,7 +50,7 @@ DEFAULT_CONFIG = {
         "osp16-2",
         "osp17",
         "osp17-1",
-        "osp18"
+        "osp18",
     ],
     "dlrn_url": "https://trunk.rdoproject.org",
     "rdo_named_tags": [
@@ -60,7 +60,7 @@ DEFAULT_CONFIG = {
         "promoted-components",
         "repo-setup-ci-testing",
         "current-tripleo",
-        "current-repo-setup-rdo"
+        "current-repo-setup-rdo",
     ],
     "repo_setup_ci_components": [
         "baremetal",
@@ -78,13 +78,7 @@ DEFAULT_CONFIG = {
         "tempest",
         "tripleo",
         "ui",
-        "validation"
+        "validation",
     ],
-    "os_versions": [
-        "centos7",
-        "centos8",
-        "centos9",
-        "rhel8",
-        "rhel9"
-    ]
+    "os_versions": ["centos7", "centos8", "centos9", "rhel8", "rhel9"],
 }

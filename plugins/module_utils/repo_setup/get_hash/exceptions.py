@@ -13,7 +13,7 @@
 #   under the License.
 #
 #
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
@@ -23,40 +23,40 @@ class Base(Exception):
     """Base Exception"""
 
 
-class TripleOHashMissingConfig(Base):
-    """Missing configuration file for TripleOHashInfo. This is thrown
+class HashMissingConfig(Base):
+    """Missing configuration file for HashInfo. This is thrown
     when there is no config.yaml in constants.CONFIG_PATH or the local
     directory assuming execution from a source checkout.
     """
 
     def __init__(self, error_msg):
-        super(TripleOHashMissingConfig, self).__init__(error_msg)
+        super(HashMissingConfig, self).__init__(error_msg)
 
 
-class TripleOHashInvalidConfig(Base):
-    """Invalid configuration file for TripleOHashInfo. This is used when
+class HashInvalidConfig(Base):
+    """Invalid configuration file for HashInfo. This is used when
     any of they keys in constants.CONFIG_KEYS is not found in config.yaml.
     """
 
     def __init__(self, error_msg):
-        super(TripleOHashInvalidConfig, self).__init__(error_msg)
+        super(HashInvalidConfig, self).__init__(error_msg)
 
 
-class TripleOHashInvalidParameter(Base):
-    """Invalid parameters passed for TripleOHashInfo. This is thrown when
+class HashInvalidParameter(Base):
+    """Invalid parameters passed for HashInfo. This is thrown when
     the user passed invalid combination ofparameters parameters to the cli
     entrypoint, for example specifying --component with centos7.
     """
 
     def __init__(self, error_msg):
-        super(TripleOHashInvalidParameter, self).__init__(error_msg)
+        super(HashInvalidParameter, self).__init__(error_msg)
 
 
-class TripleOHashInvalidDLRNResponse(Base):
+class HashInvalidDLRNResponse(Base):
     """Invalid response received from the DLRN server.  This is seen if
     the delorean server replies with a status code other than 200 OK for
     a query to commit.yaml or delorean.repo.md5.
     """
 
     def __init__(self, error_msg):
-        super(TripleOHashInvalidDLRNResponse, self).__init__(error_msg)
+        super(HashInvalidDLRNResponse, self).__init__(error_msg)

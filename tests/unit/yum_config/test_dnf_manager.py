@@ -19,11 +19,11 @@ import repo_setup.yum_config.dnf_manager as dnf_mgr
 
 
 @ddt.ddt
-class TestTripleODnfManager(test_main.TestTripleoYumConfigBase):
+class TestDnfManager(test_main.TestYumConfigBase):
     """Tests for DnfModuleManager class and its methods."""
 
     def setUp(self):
-        super(TestTripleODnfManager, self).setUp()
+        super(TestDnfManager, self).setUp()
         self.dnf = dnf_mgr.DnfModuleManager()
 
     @ddt.data(

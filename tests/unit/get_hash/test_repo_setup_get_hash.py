@@ -122,7 +122,7 @@ class TestGetHash(unittest.TestCase):
     def test_invalid_component_centos7(self, mock_config):
         args = ['--os-version', 'centos7', '--component', 'tripleo']
         sys.argv[1:] = args
-        self.assertRaises(exc.TripleOHashInvalidParameter, lambda: tgh.main())
+        self.assertRaises(exc.HashInvalidParameter, lambda: tgh.main())
 
     def test_valid_os_version(self, mock_config):
         config_file = open("fake_config_file")  # open is mocked at class level

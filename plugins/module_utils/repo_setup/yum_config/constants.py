@@ -13,7 +13,8 @@
 #   under the License.
 #
 #
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 """
 List of options that can be updated for yum repo files.
 """
@@ -21,46 +22,39 @@ List of options that can be updated for yum repo files.
 __metaclass__ = type
 
 YUM_REPO_SUPPORTED_OPTIONS = [
-    'baseurl',
-    'cost',
-    'enabled',
-    'exclude',
-    'excludepkgs',
-    'gpgcheck',
-    'gpgkey',
-    'includepkgs',
-    'metalink',
-    'mirrorlist',
-    'module_hotfixes',
-    'name',
-    'priority',
-    'skip_if_unavailable',
+    "baseurl",
+    "cost",
+    "enabled",
+    "exclude",
+    "excludepkgs",
+    "gpgcheck",
+    "gpgkey",
+    "includepkgs",
+    "metalink",
+    "mirrorlist",
+    "module_hotfixes",
+    "name",
+    "priority",
+    "skip_if_unavailable",
 ]
 
 """
 Default constants for yum repo operations.
 """
-YUM_REPO_DIR = '/etc/yum.repos.d'
-YUM_REPO_FILE_EXTENSION = '.repo'
+YUM_REPO_DIR = "/etc/yum.repos.d"
+YUM_REPO_FILE_EXTENSION = ".repo"
 
 """
 Default constants for yum/dnf global configurations.
 """
-YUM_GLOBAL_CONFIG_FILE_PATH = '/etc/yum.conf'
+YUM_GLOBAL_CONFIG_FILE_PATH = "/etc/yum.conf"
 
 """
 CentOS Stream compose repos defaults
 """
-COMPOSE_REPOS_RELEASES = [
-    "centos-stream-8",
-    "centos-stream-9"
-]
+COMPOSE_REPOS_RELEASES = ["centos-stream-8", "centos-stream-9"]
 
-COMPOSE_REPOS_SUPPORTED_ARCHS = [
-    "aarch64",
-    "ppc64le",
-    "x86_64"
-]
+COMPOSE_REPOS_SUPPORTED_ARCHS = ["aarch64", "ppc64le", "x86_64"]
 
 COMPOSE_REPOS_URL_PATTERN = {
     "centos-stream-8": r"(^https:.*.centos.org/)([^/]*)(/compose/?$)",
@@ -81,7 +75,7 @@ COMPOSE_REPOS_INFO_PATH = {
 DNF Manager constants
 """
 DNF_MODULE_MINIMAL_DISTRO_VERSIONS = [
-    {'distro': 'centos', 'min_version': 8},
-    {'distro': 'rhel', 'min_version': 8},
-    {'distro': 'fedora', 'min_version': 22},
+    {"distro": "centos", "min_version": 8},
+    {"distro": "rhel", "min_version": 8},
+    {"distro": "fedora", "min_version": 22},
 ]

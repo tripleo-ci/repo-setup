@@ -27,7 +27,7 @@ from unittest.mock import mock_open, MagicMock, patch
 )
 class TestGetHashInfo(unittest.TestCase):
     """In this class we test the functions and instantiation of the
-    TripleOHashInfo class. The builtin 'open' function is mocked at a
+    HashInfo class. The builtin 'open' function is mocked at a
     class level so we can mock the config.yaml with the contents of the
     fakes.CONFIG_FILE
     """
@@ -44,7 +44,7 @@ class TestGetHashInfo(unittest.TestCase):
             return_value=(test_fakes.TEST_COMMIT_YAML_COMPONENT, 200))
         with patch(
                 'repo_setup.get_hash.repo_setup_hash_info.http_get', mocked):
-            mock_hash_info = thi.TripleOHashInfo(
+            mock_hash_info = thi.HashInfo(
                 'centos8', 'master', 'common', 'current-tripleo'
             )
             actual_result = mock_hash_info._hashes_from_commit_yaml(
@@ -57,7 +57,7 @@ class TestGetHashInfo(unittest.TestCase):
             return_value=(test_fakes.TEST_COMMIT_YAML_COMPONENT, 200))
         with patch(
                 'repo_setup.get_hash.repo_setup_hash_info.http_get', mocked):
-            c8_component_hash_info = thi.TripleOHashInfo(
+            c8_component_hash_info = thi.HashInfo(
                 'centos8', 'master', 'common', 'current-tripleo'
             )
             repo_url = c8_component_hash_info._resolve_repo_url("https://woo")

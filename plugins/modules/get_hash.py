@@ -2,13 +2,13 @@
 # Copyright 2021 Red Hat, Inc.
 # GNU General Public License v3.0+ (see COPYING or
 # https://www.gnu.org/licenses/gpl-3.0.txt)
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
 
 
-DOCUMENTATION = r'''
+DOCUMENTATION = r"""
 ---
 module: get_hash
 
@@ -46,18 +46,18 @@ options:
 
 author:
     - Marios Andreou (@marios)
-'''
+"""
 
-EXAMPLES = r'''
+EXAMPLES = r"""
 - name: Get the latest hash info for victoria centos8 tripleo component
   repo_setup_get_hash:
     os_version: centos8
     release: victoria
     component: tripleo
     dlrn_url: 'https://foo.bar.baz'
-'''
+"""
 
-RETURN = r'''
+RETURN = r"""
 full_hash:
     description: The full hash that identifies the build
     type: str
@@ -83,7 +83,7 @@ dlrn_url:
     type: str
     returned: always
     sample: 'https://trunk.rdoproject.org/centos8-master/current-tripleo/delorean.repo.md5'  # noqa E501
-'''
+"""
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: E402
 
@@ -96,42 +96,40 @@ def run_module():
     )
 
     argument_spec = dict(
-        os_version=dict(type='str', required=False, default='centos8'),
-        release=dict(type='str', required=False, default='master'),
-        component=dict(type='str', required=False, default=None),
-        tag=dict(type='str', required=False, default='current-tripleo'),
-        dlrn_url=dict(type='str',
-                      required=False,
-                      default='https://trunk.rdoproject.org'),
+        os_version=dict(type="str", required=False, default="centos8"),
+        release=dict(type="str", required=False, default="master"),
+        component=dict(type="str", required=False, default=None),
+        tag=dict(type="str", required=False, default="current-tripleo"),
+        dlrn_url=dict(
+            type="str", required=False, default="https://trunk.rdoproject.org"
+        ),
     )
 
-    module = AnsibleModule(
-        argument_spec,
-        supports_check_mode=False
-    )
+    module = AnsibleModule(argument_spec, supports_check_mode=False)
 
     try:
+        from ansible_collections.repo_setup.repos.plugins.module_utils.repo_setup.get_hash.repo_setup_hash_info import (
+            HashInfo,
+        )
 
-        from ansible_collections.repo_setup.repos.plugins.module_utils.\
-            repo_setup.get_hash.repo_setup_hash_info import TripleOHashInfo
+        os_version = module.params.get("os_version")
+        release = module.params.get("release")
+        component = module.params.get("component")
+        tag = module.params.get("tag")
+        dlrn_url = module.params.get("dlrn_url")
 
-        os_version = module.params.get('os_version')
-        release = module.params.get('release')
-        component = module.params.get('component')
-        tag = module.params.get('tag')
-        dlrn_url = module.params.get('dlrn_url')
-
-        hash_result = TripleOHashInfo(os_version, release, component, tag,
-                                      config={'dlrn_url': dlrn_url})
-        result['commit_hash'] = hash_result.commit_hash
-        result['distro_hash'] = hash_result.distro_hash
-        result['full_hash'] = hash_result.full_hash
-        result['extended_hash'] = hash_result.extended_hash
-        result['dlrn_url'] = hash_result.dlrn_url
-        result['success'] = True
+        hash_result = HashInfo(
+            os_version, release, component, tag, config={"dlrn_url": dlrn_url}
+        )
+        result["commit_hash"] = hash_result.commit_hash
+        result["distro_hash"] = hash_result.distro_hash
+        result["full_hash"] = hash_result.full_hash
+        result["extended_hash"] = hash_result.extended_hash
+        result["dlrn_url"] = hash_result.dlrn_url
+        result["success"] = True
     except Exception as exc:
-        result['error'] = str(exc)
-        result['msg'] = "Error something went wrong fetching hash info"
+        result["error"] = str(exc)
+        result["msg"] = "Error something went wrong fetching hash info"
         module.fail_json(**result)
 
     module.exit_json(**result)
@@ -141,5 +139,5 @@ def main():
     run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

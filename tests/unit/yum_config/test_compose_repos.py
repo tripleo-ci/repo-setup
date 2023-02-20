@@ -26,10 +26,10 @@ import repo_setup.yum_config.compose_repos as repos
 import repo_setup.yum_config.yum_config as yum_config
 
 
-class TestTripleOComposeRepos(test_main.TestTripleoYumConfigBase):
-    """Tests for TripleComposeRepos class and its methods."""
+class TestComposeRepos(test_main.TestYumConfigBase):
+    """Tests for ComposeRepos class and its methods."""
     def setUp(self):
-        super(TestTripleOComposeRepos, self).setUp()
+        super(TestComposeRepos, self).setUp()
         self.repos = self._create_compose_repos_obj(
             dir_path='/tmp'
         )
@@ -48,18 +48,18 @@ class TestTripleOComposeRepos(test_main.TestTripleoYumConfigBase):
         self.mock_object(url_res, 'read',
                          mock.Mock(return_value=json_data))
 
-        return repos.TripleOYumComposeRepoConfig(
+        return repos.YumComposeRepoConfig(
             compose_url, release, dir_path=dir_path, arch=arch)
 
     def test_repo_setup_compose_repos_invalid_release(self):
-        self.assertRaises(exc.TripleOYumConfigComposeError,
-                          repos.TripleOYumComposeRepoConfig,
+        self.assertRaises(exc.YumConfigComposeError,
+                          repos.YumComposeRepoConfig,
                           fakes.FAKE_COMPOSE_URL,
                           'invalid_release')
 
     def test_repo_setup_compose_repos_invalid_url(self):
-        self.assertRaises(exc.TripleOYumConfigComposeError,
-                          repos.TripleOYumComposeRepoConfig,
+        self.assertRaises(exc.YumConfigComposeError,
+                          repos.YumComposeRepoConfig,
                           "http://invalid_url.org",
                           const.COMPOSE_REPOS_RELEASES[0])
 
@@ -67,7 +67,7 @@ class TestTripleOComposeRepos(test_main.TestTripleoYumConfigBase):
         self.mock_object(urllib.request, "urlopen",
                          mock.Mock(side_effect=Exception))
 
-        self.assertRaises(exc.TripleOYumConfigComposeError,
+        self.assertRaises(exc.YumConfigComposeError,
                           self.repos._get_compose_info)
 
     def test_enable_compose_repos(self):
@@ -80,7 +80,7 @@ class TestTripleOComposeRepos(test_main.TestTripleoYumConfigBase):
     @mock.patch('builtins.open')
     def test_add_section(self, open):
         self.mock_object(os.path, 'isfile', mock.Mock(return_value=False))
-        mock_add_section = self.mock_object(yum_config.TripleOYumConfig,
+        mock_add_section = self.mock_object(yum_config.YumConfig,
                                             "add_section")
 
         self.repos.add_section(fakes.FAKE_SECTION1, fakes.FAKE_SET_DICT,
@@ -91,7 +91,7 @@ class TestTripleOComposeRepos(test_main.TestTripleoYumConfigBase):
         )
 
     def test_update_section(self):
-        mock_update = self.mock_object(yum_config.TripleOYumConfig,
+        mock_update = self.mock_object(yum_config.YumConfig,
                                        "update_section")
         expected_set_dict = copy.deepcopy(fakes.FAKE_SET_DICT)
         expected_set_dict['enabled'] = '1'
@@ -106,7 +106,7 @@ class TestTripleOComposeRepos(test_main.TestTripleoYumConfigBase):
                                             file_path=fakes.FAKE_FILE_PATH)
 
     def test_update_all_sections(self):
-        mock_update = self.mock_object(yum_config.TripleOYumConfig,
+        mock_update = self.mock_object(yum_config.YumConfig,
                                        "update_all_sections")
         expected_set_dict = copy.deepcopy(fakes.FAKE_SET_DICT)
         expected_set_dict['enabled'] = '0'
