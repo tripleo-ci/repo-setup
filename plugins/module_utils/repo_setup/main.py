@@ -27,7 +27,7 @@ __metaclass__ = type
 TITLE_RE = re.compile("\\[(.*)\\]")
 NAME_RE = re.compile("name=(.+)")
 PRIORITY_RE = re.compile("priority=\\d+")
-# Packages to be included from delorean-current when using current-tripleo
+# Packages to be included from delorean-current when using current-podified
 INCLUDE_PKGS = (
     "includepkgs=instack,instack-undercloud,"
     "os-apply-config,os-collect-config,os-net-config,"
@@ -199,18 +199,18 @@ def _parse_args(distro_id, distro_major_version_id):
         choices=[
             "current",
             "deps",
-            "current-tripleo",
-            "current-repo-setup-dev",
+            "current-podified",
+            "current-podified-dev",
             "ceph",
             "opstools",
-            "repo-setup-ci-testing",
-            "current-repo-setup-rdo",
+            "podified-ci-testing",
+            "current-podified-rdo",
         ],
         help="A list of repos.  Available repos: "
         "%(choices)s.  The deps repo will always be "
         "included when using current or "
-        "current-tripleo.  current-repo-setup-dev "
-        "downloads the current-tripleo, current, and "
+        "current-podified.  current-podified-dev "
+        "downloads the current-podified, current, and "
         "deps repos, but sets the current repo to only "
         "be used for TripleO projects. It also modifies "
         "each repo's priority so packages are installed "
@@ -313,21 +313,21 @@ def _validate_distro_repos(args):
     if "fedora" in args.distro:
         valid_repos = [
             "current",
-            "current-tripleo",
+            "current-podified",
             "ceph",
             "deps",
-            "tripleo-ci-testing",
+            "podified-ci-testing",
         ]
     elif args.distro in DISTRO_CHOICES:
         valid_repos = [
             "ceph",
             "current",
-            "current-tripleo",
-            "current-tripleo-dev",
+            "current-podified",
+            "current-podified-dev",
             "deps",
-            "tripleo-ci-testing",
+            "podified-ci-testing",
             "opstools",
-            "current-tripleo-rdo",
+            "current-podified-rdo",
         ]
     invalid_repos = [x for x in args.repos if x not in valid_repos]
     if len(invalid_repos) > 0:
@@ -341,37 +341,37 @@ def _validate_distro_repos(args):
 def _validate_current_repos(repos):
     """Validate current usage
 
-    current and current-tripleo cannot be specified with each other and
-    current-repo-setup-dev is a mix of current, current-tripleo and deps
+    current and current-podified cannot be specified with each other and
+    current-podified-dev is a mix of current, current-podified and deps
     so they should not be specified on the command line with each other.
     """
-    if "current-tripleo" in repos and "current" in repos:
+    if "current-podified" in repos and "current" in repos:
         raise InvalidArguments(
-            "Cannot use current and current-tripleo at the " "same time."
+            "Cannot use current and current-podified at the " "same time."
         )
-    if "current-repo-setup-dev" not in repos:
+    if "current-podified-dev" not in repos:
         return True
-    if "current" in repos or "current-tripleo" in repos or "deps" in repos:
+    if "current" in repos or "current-podified" in repos or "deps" in repos:
         raise InvalidArguments(
-            "current-repo-setup-dev should not be used with "
+            "current-podified-dev should not be used with "
             "any other RDO Trunk repos."
         )
     return True
 
 
 def _validate_repo_setup_ci_testing(repos):
-    """Validate repo-setup-ci-testing
+    """Validate podified-ci-testing
 
-    With repo-setup-ci-testing for repo (currently only periodic container build)
+    With podified-ci-testing for repo (currently only periodic container build)
     no other repos expected except optionally deps|ceph|opstools
     which is enabled regardless.
     """
-    if "repo-setup-ci-testing" in repos and len(repos) > 1:
+    if "podified-ci-testing" in repos and len(repos) > 1:
         if "deps" in repos or "ceph" in repos or "opstools" in repos:
             return True
         else:
             raise InvalidArguments(
-                "Cannot use repo-setup-ci-testing at the "
+                "Cannot use podified-ci-testing at the "
                 "same time as other repos, except "
                 "deps|ceph|opstools."
             )
@@ -545,31 +545,31 @@ def _install_repos(args, base_path):
             install_deps(args, base_path)
         elif repo == "deps":
             install_deps(args, base_path)
-        elif repo == "current-tripleo":
-            content = _get_repo(base_path + "current-tripleo/delorean.repo", args)
+        elif repo == "current-podified":
+            content = _get_repo(base_path + "current-podified/delorean.repo", args)
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
-        elif repo == "current-repo-setup-dev":
+        elif repo == "current-podified-dev":
             content = _get_repo(base_path + "delorean-deps.repo", args)
             _write_repo(content, args.output_path)
-            content = _get_repo(base_path + "current-tripleo/delorean.repo", args)
-            content = TITLE_RE.sub("[\\1-current-tripleo]", content)
-            content = NAME_RE.sub("name=\\1-current-tripleo", content)
+            content = _get_repo(base_path + "current-podified/delorean.repo", args)
+            content = TITLE_RE.sub("[\\1-current-podified]", content)
+            content = NAME_RE.sub("name=\\1-current-podified", content)
             # We need to twiddle priorities since we're mixing multiple repos
             # that are generated with the same priority.
             content = _change_priority(content, 20)
-            _write_repo(content, args.output_path, name="delorean-current-tripleo")
+            _write_repo(content, args.output_path, name="delorean-current-podified")
             content = _get_repo(base_path + "current/delorean.repo", args)
             content = _add_includepkgs(content)
             content = _change_priority(content, 10)
             _write_repo(content, args.output_path, name="delorean")
-        elif repo == "repo-setup-ci-testing":
-            content = _get_repo(base_path + "repo-setup-ci-testing/delorean.repo", args)
+        elif repo == "podified-ci-testing":
+            content = _get_repo(base_path + "podified-ci-testing/delorean.repo", args)
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
-        elif repo == "current-repo-setup-rdo":
+        elif repo == "current-podified-rdo":
             content = _get_repo(
-                base_path + "current-repo-setup-rdo/delorean.repo", args
+                base_path + "current-podified-rdo/delorean.repo", args
             )
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
