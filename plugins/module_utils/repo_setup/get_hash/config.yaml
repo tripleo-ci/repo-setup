@@ -41,9 +41,8 @@ rdo_named_tags:
   - consistent
   - component-ci-testing
   - promoted-components
-  - repo-setup-ci-testing
-  - current-tripleo
-  - current-repo-setup-rdo
+  - podified-ci-testing
+  - current-podified
 
 os_versions:
   - centos7
