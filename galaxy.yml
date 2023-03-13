@@ -1,6 +1,6 @@
 name: repos
-namespace: tripleo
-version: 0.0.5
+namespace: repo_setup
+version: 0.0.1
 readme: README.md
 authors:
   - Red Hat
@@ -35,5 +35,5 @@ build_ignore:
   # that is not needed for ansible modules and it would upset sanity (pylint)
   - plugins/module_utils/repo_setup/main.py
 
-repository: https://opendev.org/openstack/repo-setup
+repository: https://github.com/ci-framework/repo-setup
 license_file: LICENSE

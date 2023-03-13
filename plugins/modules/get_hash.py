@@ -108,7 +108,7 @@ def run_module():
     module = AnsibleModule(argument_spec, supports_check_mode=False)
 
     try:
-        from ansible_collections.repo_setup.repos.plugins.module_utils.repo_setup.get_hash.repo_setup_hash_info import (
+        from ansible_collections.repo_setup.repos.plugins.module_utils.repo_setup.get_hash.hash_info import (
             HashInfo,
         )
 
