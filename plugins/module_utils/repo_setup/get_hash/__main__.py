@@ -15,6 +15,7 @@
 #
 
 import argparse
+import json
 import logging
 import sys
 from repo_setup.utils import load_logging
@@ -66,6 +67,11 @@ def main():
         action="store_true",
         help=("Enable verbose log level for debugging"),
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help=("Enable JSON output"),
+    )
 
     args = parser.parse_args()
 
@@ -89,9 +95,21 @@ def main():
         args.tag,
         config,
     )
-    print(repo_setup_hash_info)
-    return repo_setup_hash_info
+    if args.json:
+        dict_data = {"commit_hash": repo_setup_hash_info.commit_hash,
+                     "distro_hash": repo_setup_hash_info.distro_hash,
+                     "full_hash": repo_setup_hash_info.full_hash,
+                     "extended_hash": repo_setup_hash_info.extended_hash,
+                     "dlrn_url": repo_setup_hash_info.dlrn_url,
+                     "os_version": repo_setup_hash_info.os_version,
+                     "release": repo_setup_hash_info.release,
+                     "component": repo_setup_hash_info.component,
+                     "tag": repo_setup_hash_info.tag}
 
+        print(json.dumps(dict_data))
+    else:
+        print(repo_setup_hash_info)
+        return repo_setup_hash_info
 
 def cli_entrypoint():
     try:

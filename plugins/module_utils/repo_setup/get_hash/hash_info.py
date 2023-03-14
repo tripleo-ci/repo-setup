@@ -99,9 +99,9 @@ class HashInfo:
         elif local_config:
             config_path = local_config
         else:
-            logging.info("Using embedded config file")
+            logging.debug("Using embedded config file")
             loaded_config = DEFAULT_CONFIG
-        logging.info("Using config file at %s", config_path)
+        logging.debug("Using config file at %s", config_path)
         if config_path != "":
             with open(config_path, "r") as config_yaml:
                 loaded_config = cls.load_yaml(config_yaml)
