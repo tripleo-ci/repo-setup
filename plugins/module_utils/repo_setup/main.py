@@ -167,7 +167,7 @@ def _get_distro():
     if (distro_id, distro_major_version_id) not in SUPPORTED_DISTROS:
         print(
             "WARNING: Unsupported platform '{0}{1}' detected by repo-setup,"
-            " centos7 will be used unless you use CLI param to change it."
+            " centos9 will be used unless you use CLI param to change it."
             "".format(distro_id, distro_major_version_id),
             file=sys.stderr,
         )
@@ -187,7 +187,7 @@ def _parse_args(distro_id, distro_major_version_id):
     distro = "{0}{1}".format(distro_id, distro_major_version_id)
 
     parser = argparse.ArgumentParser(
-        description="Download and install repos necessary for TripleO. Note "
+        description="Download and install repos necessary for OpenStack. Note "
         "that some of these repos require yum-plugin-priorities, "
         "so that will also be installed.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
@@ -212,7 +212,7 @@ def _parse_args(distro_id, distro_major_version_id):
         "current-podified.  current-podified-dev "
         "downloads the current-podified, current, and "
         "deps repos, but sets the current repo to only "
-        "be used for TripleO projects. It also modifies "
+        "be used for OpenStack projects. It also modifies "
         "each repo's priority so packages are installed "
         "from the appropriate location.",
     )
