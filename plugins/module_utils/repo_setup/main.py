@@ -538,6 +538,10 @@ def _get_rhel_trunk_candidate_repos(args, base_path):
     content = content.replace('deps', 'candidate')
     content = content.replace('build', 'candidate')
     content = _change_priority(content, 30)
+    # Remove module_hotfixes
+    content = content.split()
+    content.remove('module_hotfixes=1')
+    content = '\n'.join(content)
     return content
 
 def _install_repos(args, base_path):
