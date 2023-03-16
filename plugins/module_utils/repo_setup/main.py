@@ -532,11 +532,22 @@ def _inject_mirrors(content, args):
 
     return content
 
+def _get_rhel_trunk_candidate_repos(args, base_path):
+    content = _get_repo(base_path + "osptrunk-deps.repo", args)
+    # Replace deps with candidate
+    content = content.replace('deps', 'candidate')
+    content = content.replace('build', 'candidate')
+    content = _change_priority(content, 30)
+    return content
 
 def _install_repos(args, base_path):
     def install_deps(args, base_path):
-        content = _get_repo(base_path + "delorean-deps.repo", args)
-        _write_repo(content, args.output_path)
+        if 'rhel' in args.distro:
+            content = _get_rhel_trunk_candidate_repos(args, base_path)
+            _write_repo(content, args.output_path, name="osp-trunk-candidate")
+        else:
+            content = _get_repo(base_path + "delorean-deps.repo", args)
+            _write_repo(content, args.output_path)
 
     for repo in args.repos:
         if repo == "current":
