@@ -16,7 +16,7 @@ import json
 import logging
 import re
 import requests
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import *  # noqa
 
 
 DOCUMENTATION = '''
@@ -210,7 +210,7 @@ def resolve_dep(host, change_id, branch, revision):
 
 
 def main():
-    module = AnsibleModule(
+    module = AnsibleModule(  # noqa
         argument_spec=dict(
             host=dict(required=True, type='str'),
             change_id=dict(required=True, type='str'),

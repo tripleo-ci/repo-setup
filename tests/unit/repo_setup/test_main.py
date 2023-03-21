@@ -93,7 +93,7 @@ class TestTripleORepos(testtools.TestCase):
     @mock.patch('os.path.exists')
     def test_remove_existing(self, mock_exists, mock_remove, mock_listdir):
         fake_list = ['foo.repo', 'delorean.repo',
-                     'delorean-current-tripleo.repo',
+                     'delorean-current-podified.repo',
                      'repo-setup-centos-opstools.repo',
                      'repo-setup-centos-highavailability.repo']
         mock_exists.return_value = [True, False, True, False, True,
@@ -105,7 +105,7 @@ class TestTripleORepos(testtools.TestCase):
         self.assertIn(mock.call('/etc/yum.repos.d/delorean.repo'),
                       mock_remove.mock_calls)
         self.assertIn(mock.call('/etc/yum.repos.d/'
-                                'delorean-current-tripleo.repo'),
+                                'delorean-current-podified.repo'),
                       mock_remove.mock_calls)
         self.assertIn(
             mock.call('/etc/yum.repos.d/repo-setup-centos-opstools.repo'),
@@ -203,15 +203,15 @@ class TestTripleORepos(testtools.TestCase):
 
     @mock.patch('repo_setup.main._get_repo')
     @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_current_tripleo(self, mock_write, mock_get):
+    def test_install_repos_current_podified(self, mock_write, mock_get):
         args = mock.Mock()
-        args.repos = ['current-tripleo']
+        args.repos = ['current-podified']
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
         mock_get.return_value = '[delorean]\nMr. Fusion'
         main._install_repos(args, 'roads/')
-        self.assertEqual([mock.call('roads/current-tripleo/delorean.repo',
+        self.assertEqual([mock.call('roads/current-podified/delorean.repo',
                                     args),
                           mock.call('roads/delorean-deps.repo', args),
                           ],
@@ -223,9 +223,9 @@ class TestTripleORepos(testtools.TestCase):
 
     @mock.patch('repo_setup.main._get_repo')
     @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_current_repo_setup_dev(self, mock_write, mock_get):
+    def test_install_repos_current_podified_dev(self, mock_write, mock_get):
         args = mock.Mock()
-        args.repos = ['current-repo-setup-dev']
+        args.repos = ['current-podified-dev']
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
@@ -235,10 +235,10 @@ class TestTripleORepos(testtools.TestCase):
         # This is the wrong name for the deps repo, but I'm not bothered
         # enough by that to mess with mocking multiple different calls.
         mock_write.assert_any_call('[delorean]\nMr. Fusion', 'test')
-        mock_get.assert_any_call('roads/current-tripleo/delorean.repo', args)
-        mock_write.assert_any_call('[delorean-current-tripleo]\n'
+        mock_get.assert_any_call('roads/current-podified/delorean.repo', args)
+        mock_write.assert_any_call('[delorean-current-podified]\n'
                                    'priority=20\nMr. Fusion', 'test',
-                                   name='delorean-current-tripleo')
+                                   name='delorean-current-podified')
         mock_get.assert_called_with('roads/current/delorean.repo', args)
         mock_write.assert_called_with('[delorean]\npriority=10\n%s\n'
                                       'Mr. Fusion' %
@@ -247,15 +247,15 @@ class TestTripleORepos(testtools.TestCase):
 
     @mock.patch('repo_setup.main._get_repo')
     @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_repo_setup_ci_testing(self, mock_write, mock_get):
+    def test_install_repos_podified_ci_testing(self, mock_write, mock_get):
         args = mock.Mock()
-        args.repos = ['repo-setup-ci-testing']
+        args.repos = ['podified-ci-testing']
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
         mock_get.return_value = '[delorean]\nMr. Fusion'
         main._install_repos(args, 'roads/')
-        self.assertEqual([mock.call('roads/repo-setup-ci-testing/delorean.repo',
+        self.assertEqual([mock.call('roads/podified-ci-testing/delorean.repo',
                                     args),
                           mock.call('roads/delorean-deps.repo', args),
                           ],
@@ -267,15 +267,15 @@ class TestTripleORepos(testtools.TestCase):
 
     @mock.patch('repo_setup.main._get_repo')
     @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_current_repo_setup_rdo(self, mock_write, mock_get):
+    def test_install_repos_current_podified_rdo(self, mock_write, mock_get):
         args = mock.Mock()
-        args.repos = ['current-repo-setup-rdo']
+        args.repos = ['current-podified-rdo']
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
         mock_get.return_value = '[delorean]\nMr. Fusion'
         main._install_repos(args, 'roads/')
-        self.assertEqual([mock.call('roads/current-repo-setup-rdo/delorean.repo',
+        self.assertEqual([mock.call('roads/current-podified-rdo/delorean.repo',
                                     args),
                           mock.call('roads/delorean-deps.repo', args),
                           ],
@@ -348,7 +348,7 @@ class TestTripleORepos(testtools.TestCase):
         args.rdo_mirror = 'http://bar'
         # Abbreviated repos to verify the regex works
         fake_repo = '''
-[delorean-current-tripleo]
+[delorean-current-podified]
 name=test repo
 baseurl=https://trunk.rdoproject.org/centos7/some-repo-hash
 enabled=1
@@ -359,7 +359,7 @@ baseurl=http://mirror.centos.org/centos/7/virt/$basearch/kvm-common
 enabled=1
 '''
         expected_repo = '''
-[delorean-current-tripleo]
+[delorean-current-podified]
 name=test repo
 baseurl=http://bar/centos7/some-repo-hash
 enabled=1
@@ -708,41 +708,41 @@ class TestValidate(testtools.TestCase):
     def test_good(self):
         main._validate_args(self.args, '', '')
 
-    def test_current_and_repo_setup_dev(self):
-        self.args.repos = ['current', 'current-repo-setup-dev']
+    def test_current_and_podified_dev(self):
+        self.args.repos = ['current', 'current-podified-dev']
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')
 
-    def test_repo_setup_ci_testing_and_current_tripleo(self):
-        self.args.repos = ['current-tripleo', 'repo-setup-ci-testing']
+    def test_podified_ci_testing_and_current_podified(self):
+        self.args.repos = ['current-podified', 'podified-ci-testing']
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')
 
-    def test_repo_setup_ci_testing_and_ceph_opstools_allowed(self):
-        self.args.repos = ['ceph', 'opstools', 'repo-setup-ci-testing']
+    def test_podified_ci_testing_and_ceph_opstools_allowed(self):
+        self.args.repos = ['ceph', 'opstools', 'podified-ci-testing']
         main._validate_args(self.args, '', '')
 
-    def test_repo_setup_ci_testing_and_deps_allowed(self):
-        self.args.repos = ['deps', 'repo-setup-ci-testing']
+    def test_podified_ci_testing_and_deps_allowed(self):
+        self.args.repos = ['deps', 'podified-ci-testing']
         main._validate_args(self.args, '', '')
 
-    def test_ceph_and_repo_setup_dev(self):
-        self.args.repos = ['current-repo-setup-dev', 'ceph']
+    def test_ceph_and_podified_dev(self):
+        self.args.repos = ['current-podified-dev', 'ceph']
         self.args.output_path = main.DEFAULT_OUTPUT_PATH
         main._validate_args(self.args, '', '')
 
-    def test_deps_and_repo_setup_dev(self):
-        self.args.repos = ['deps', 'current-repo-setup-dev']
+    def test_deps_and_podified_dev(self):
+        self.args.repos = ['deps', 'current-podified-dev']
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')
 
     def test_current_and_tripleo(self):
-        self.args.repos = ['current', 'current-tripleo']
+        self.args.repos = ['current', 'current-podified']
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')
 
-    def test_deps_and_repo_setup_allowed(self):
-        self.args.repos = ['deps', 'current-tripleo']
+    def test_deps_and_podified_allowed(self):
+        self.args.repos = ['deps', 'current-podified']
         main._validate_args(self.args, '', '')
 
     def test_invalid_distro(self):
@@ -766,8 +766,8 @@ class TestValidate(testtools.TestCase):
     def test_validate_distro_repos(self):
         self.assertTrue(main._validate_distro_repos(self.args))
 
-    def test_validate_distro_repos_fedora_repo_setup_dev(self):
+    def test_validate_distro_repos_fedora_podified_dev(self):
         self.args.distro = 'fedora'
-        self.args.repos = ['current-repo-setup-dev']
+        self.args.repos = ['current-podified-dev']
         self.assertRaises(main.InvalidArguments, main._validate_distro_repos,
                           self.args)

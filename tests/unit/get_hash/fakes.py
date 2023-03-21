@@ -101,9 +101,9 @@ rdo_named_tags:
   - current
   - consistent
   - component-ci-testing
-  - repo-setup-ci-testing
-  - current-tripleo
-  - current-repo-setup-rdo
+  - podified-ci-testing
+  - current-podified
+  - current-podified-rdo
 
 os_versions:
   - centos7

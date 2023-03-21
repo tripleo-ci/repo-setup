@@ -58,9 +58,9 @@ DEFAULT_CONFIG = {
         "consistent",
         "component-ci-testing",
         "promoted-components",
-        "repo-setup-ci-testing",
-        "current-tripleo",
-        "current-repo-setup-rdo",
+        "podified-ci-testing",
+        "current-podified",
+        "current-podified-rdo",
     ],
     "repo_setup_ci_components": [
         "baremetal",

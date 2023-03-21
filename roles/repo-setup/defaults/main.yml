@@ -65,9 +65,9 @@ known_hash_tags:
   - current
   - consistent
   - tripleo-ci-testing
-  - current-tripleo
-  - current-tripleo-rdo
-  - current-tripleo-rdo-internal
+  - current-podified
+  - current-podified-rdo
+  - current-podified-rdo-internal
   - current-passed-ci
   - promoted-components
   - component-ci-testing

@@ -39,13 +39,13 @@ class TestGetHash(unittest.TestCase):
         mocked = MagicMock(
             return_value=(test_fakes.TEST_REPO_MD5, 200))
         with patch(
-                'repo_setup.get_hash.repo_setup_hash_info.http_get', mocked):
+                'repo_setup.get_hash.hash_info.http_get', mocked):
             args = ['--os-version', 'centos8', '--release', 'victoria']
             sys.argv[1:] = args
             main_res = tgh.main()
             self.assertEqual(main_res.full_hash, test_fakes.TEST_REPO_MD5)
             self.assertEqual(
-                'https://trunk.rdoproject.org/centos8-victoria/current-tripleo/delorean.repo.md5',  # noqa
+                'https://trunk.rdoproject.org/centos8-victoria/current-podified/delorean.repo.md5',  # noqa
                 main_res.dlrn_url,
             )
             self.assertEqual('centos8', main_res.os_version)
@@ -59,7 +59,7 @@ class TestGetHash(unittest.TestCase):
 #        mocked = MagicMock(
 #            return_value=(test_fakes.TEST_REPO_MD5, 200))
 #        with patch(
-#                'repo_setup.get_hash.repo_setup_hash_info.http_get', mocked):
+#                'repo_setup.get_hash.hash_info.http_get', mocked):
 #            with self.assertLogs() as captured:
 #                sys.argv[1:] = args
 #                tgh.main()
@@ -76,9 +76,9 @@ class TestGetHash(unittest.TestCase):
 #        mocked = MagicMock(
 #            return_value=(test_fakes.TEST_REPO_MD5, 200))
 #        with patch(
-#                'repo_setup.get_hash.repo_setup_hash_info.http_get', mocked):
+#                'repo_setup.get_hash.hash_info.http_get', mocked):
 #
-#            args = ['--tag', 'current-tripleo', '--os-version', 'centos8']
+#            args = ['--tag', 'current-podified', '--os-version', 'centos8']
 #            with self.assertLogs() as captured:
 #                sys.argv[1:] = args
 #                tgh.main()
@@ -104,7 +104,7 @@ class TestGetHash(unittest.TestCase):
             mocked = MagicMock(
                 return_value=(test_fakes.TEST_COMMIT_YAML_COMPONENT, 200))
             with patch(
-                    'repo_setup.get_hash.repo_setup_hash_info.http_get',
+                    'repo_setup.get_hash.hash_info.http_get',
                     mocked):
 
                 args = ['--component', "{}".format(component)]
@@ -112,7 +112,7 @@ class TestGetHash(unittest.TestCase):
                 main_res = tgh.main()
                 self.assertEqual(
                     "https://trunk.rdoproject.org/centos8-master/component"
-                    "/{}/current-tripleo/commit.yaml".format(
+                    "/{}/current-podified/commit.yaml".format(
                         component
                     ),
                     main_res.dlrn_url,
@@ -135,17 +135,17 @@ class TestGetHash(unittest.TestCase):
                     return_value=(test_fakes.TEST_COMMIT_YAML_CENTOS_7, 200))
                 expected_url = (
                     "https://trunk.rdoproject.org/{}-master/"
-                    "current-tripleo/commit.yaml".format(os_v)
+                    "current-podified/commit.yaml".format(os_v)
                 )
             else:
                 mocked = MagicMock(
                     return_value=(test_fakes.TEST_REPO_MD5, 200))
                 expected_url = (
                     "https://trunk.rdoproject.org/{}-master/"
-                    "current-tripleo/delorean.repo.md5".format(os_v)
+                    "current-podified/delorean.repo.md5".format(os_v)
                 )
             with patch(
-                    'repo_setup.get_hash.repo_setup_hash_info.http_get',
+                    'repo_setup.get_hash.hash_info.http_get',
                     mocked):
                 args = ['--os-version', "{}".format(os_v)]
                 sys.argv[1:] = args
@@ -172,7 +172,7 @@ class TestGetHash(unittest.TestCase):
             mocked = MagicMock(
                 return_value=(test_fakes.TEST_REPO_MD5, 200))
             with patch(
-                    'repo_setup.get_hash.repo_setup_hash_info.http_get',
+                    'repo_setup.get_hash.hash_info.http_get',
                     mocked):
 
                 args = ['--tag', "{}".format(tag)]
@@ -191,14 +191,14 @@ class TestGetHash(unittest.TestCase):
         mocked = MagicMock(
             return_value=(test_fakes.TEST_REPO_MD5, 200))
         with patch(
-                'repo_setup.get_hash.repo_setup_hash_info.http_get',
+                'repo_setup.get_hash.hash_info.http_get',
                 mocked):
 
             args = ['--dlrn-url', 'https://awoo.com/awoo']
             sys.argv[1:] = args
             main_res = tgh.main()
             self.assertEqual(
-                "https://awoo.com/awoo/centos8-master/current-tripleo"
+                "https://awoo.com/awoo/centos8-master/current-podified"
                 "/delorean.repo.md5",
                 main_res.dlrn_url,
             )
@@ -207,7 +207,7 @@ class TestGetHash(unittest.TestCase):
         mocked = MagicMock(
             return_value=(test_fakes.TEST_REPO_MD5, 200))
         with patch(
-                'repo_setup.get_hash.repo_setup_hash_info.http_get',
+                'repo_setup.get_hash.hash_info.http_get',
                 mocked):
             args = [
                 '--dlrn-url',
@@ -222,7 +222,7 @@ class TestGetHash(unittest.TestCase):
             self.assertEqual('rhel8', main_res.os_version)
             self.assertEqual('osp16-2', main_res.release)
             self.assertEqual(
-                "https://awoo.com/awoo/rhel8-osp16-2/current-tripleo"
+                "https://awoo.com/awoo/rhel8-osp16-2/current-podified"
                 "/delorean.repo.md5", main_res.dlrn_url,
             )
 

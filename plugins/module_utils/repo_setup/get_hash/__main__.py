@@ -52,7 +52,7 @@ def main():
     )
     parser.add_argument(
         "--tag",
-        default="current-tripleo",
+        default="current-podified",
         choices=config["rdo_named_tags"],
         help=("The known tag to retrieve the hash_info for"),
     )
@@ -110,6 +110,7 @@ def main():
     else:
         print(repo_setup_hash_info)
         return repo_setup_hash_info
+
 
 def cli_entrypoint():
     try:

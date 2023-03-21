@@ -7,7 +7,7 @@
         os_version: centos8       # default: centos8
         release: victoria         # default: master
         component: compute        # default: None
-        tag: component-ci-testing   # default: current-tripleo
+        tag: component-ci-testing # default: current-podified
       register: component_ci_testing_victoria_compute
 
     - debug:
@@ -16,25 +16,25 @@
     - debug:
         var: component_ci_testing_victoria_compute
 
-    - name: get centos7 repo-setup-ci-testing for train
+    - name: get centos9 podified-ci-testing for zed
       repo_setup.repos.get_hash:
-        os_version: centos7
-        release: train
-        tag: repo-setup-ci-testing
-      register: centos7_repo_setup_ci_testing_train
+        os_version: centos9
+        release: zed
+        tag: podified-ci-testing
+      register: centos9_podified_ci_testing_zed
 
     - debug:
-        msg: "Centos7 current-tripleo train: {{ centos7_repo_setup_ci_testing_train['full_hash'] }}"
+        msg: "Centos9 podified-ci-testing zed: {{ centos9_podified_ci_testing_zed['full_hash'] }}"
 
     - debug:
-        var: centos7_repo_setup_ci_testing_train
+        var: centos9_repo_setup_ci_testing_zed
 
-    - name: get current-tripleo centos8 for master branch
+    - name: get current-podified centos9 for master branch
       repo_setup.repos.get_hash:
-      register: centos8_current_repo_setup_master
+      register: centos9_current_repo_setup_master
 
     - debug:
-        msg: "Centos8 current-tripleo master: {{ centos8_current_repo_setup_master['full_hash'] }}"
+        msg: "Centos9 current-podified master: {{ centos9_current_repo_setup_master['full_hash'] }}"
 
     - debug:
-        var: centos8_current_repo_setup_master
+        var: centos9_current_repo_setup_master

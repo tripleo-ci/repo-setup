@@ -359,7 +359,7 @@ def _validate_current_repos(repos):
     return True
 
 
-def _validate_repo_setup_ci_testing(repos):
+def _validate_podified_ci_testing(repos):
     """Validate podified-ci-testing
 
     With podified-ci-testing for repo (currently only periodic container build)
@@ -410,7 +410,7 @@ def _validate_distro_stream(args, distro_name, distro_major_version_id):
 def _validate_args(args, distro_name, distro_major_version_id):
     _validate_current_repos(args.repos)
     _validate_distro_repos(args)
-    _validate_repo_setup_ci_testing(args.repos)
+    _validate_podified_ci_testing(args.repos)
     _validate_distro_stream(args, distro_name, distro_major_version_id)
 
 
@@ -532,6 +532,7 @@ def _inject_mirrors(content, args):
 
     return content
 
+
 def _get_rhel_trunk_candidate_repos(args, base_path):
     content = _get_repo(base_path + "osptrunk-deps.repo", args)
     # Replace deps with candidate
@@ -543,6 +544,7 @@ def _get_rhel_trunk_candidate_repos(args, base_path):
     content.remove('module_hotfixes=1')
     content = '\n'.join(content)
     return content
+
 
 def _install_repos(args, base_path):
     def install_deps(args, base_path):
