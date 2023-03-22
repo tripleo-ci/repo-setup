@@ -37,8 +37,8 @@ class TestYumConfig(test_main.TestYumConfigBase):
         self.mock_object(os, 'access')
         self.mock_object(os.path, 'isdir')
         return yum_cfg.YumConfig(dir_path=dir_path,
-                                        valid_options=valid_options,
-                                        file_extension=file_extension)
+                                 valid_options=valid_options,
+                                 file_extension=file_extension)
 
     def test_repo_setup_yum_config_invalid_dir_path(self):
         self.mock_object(os.path, 'isdir',

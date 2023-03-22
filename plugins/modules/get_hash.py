@@ -37,7 +37,7 @@ options:
         description: The named tag to fetch
         required: false
         type: str
-        default: current-tripleo
+        default: current-podified
     dlrn_url:
         description: The url of the DLRN server to use for hash queries
         required: false
@@ -82,7 +82,7 @@ dlrn_url:
     description: The dlrn server url from which hash info was collected.
     type: str
     returned: always
-    sample: 'https://trunk.rdoproject.org/centos8-master/current-tripleo/delorean.repo.md5'  # noqa E501
+    sample: 'https://trunk.rdoproject.org/centos8-master/current-podified/delorean.repo.md5'  # noqa E501
 """
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: E402
@@ -99,7 +99,7 @@ def run_module():
         os_version=dict(type="str", required=False, default="centos8"),
         release=dict(type="str", required=False, default="master"),
         component=dict(type="str", required=False, default=None),
-        tag=dict(type="str", required=False, default="current-tripleo"),
+        tag=dict(type="str", required=False, default="current-podified"),
         dlrn_url=dict(
             type="str", required=False, default="https://trunk.rdoproject.org"
         ),

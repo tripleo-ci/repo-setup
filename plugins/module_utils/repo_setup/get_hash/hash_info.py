@@ -37,7 +37,7 @@ class HashInfo:
     represent a particular delorean build hash. This includes the full, commit,
     distro and extended hashes (where applicable), as well as the release,
     OS name and version, component name (if applicable), named tag
-    (current-tripleo, repo-setup-ci-testing etc) as well as the URL to the
+    (current-podified, podified-testing etc) as well as the URL to the
     delorean server that provided the information used to build each object
     instance.
     """
@@ -125,8 +125,8 @@ class HashInfo:
 
         :param os_version: The OS and version e.g. centos8
         :param release: The OpenStack release e.g. wallaby
-        :param component: The repo-setup-ci component e.g. 'common' or None
-        :param tag: The Delorean server named tag e.g. current-tripleo
+        :param component: The podified-ci component e.g. 'common' or None
+        :param tag: The Delorean server named tag e.g. current-podified
         :param config: Use an existing config dictionary and don't load it
         """
         config = HashInfo.load_config(config)
@@ -166,9 +166,9 @@ class HashInfo:
         """Resolve the delorean server URL given the various attributes of
         this HashInfo object. The only passed parameter is the
         dlrn_url. There are three main cases:
-            * centos8/rhel8 component https://trunk.rdoproject.org/centos8/component/common/current-tripleo/commit.yaml
-            * centos7 https://trunk.rdoproject.org/centos7/current-tripleo/commit.yaml
-            * centos8/rhel8 non component https://trunk.rdoproject.org/centos8/current-tripleo/delorean.repo.md5
+            * centos8/rhel8 component https://trunk.rdoproject.org/centos8/component/common/current-podified/commit.yaml
+            * centos7 https://trunk.rdoproject.org/centos7/current-podified/commit.yaml
+            * centos8/rhel8 non component https://trunk.rdoproject.org/centos8/current-podified/delorean.repo.md5
         Returns a string which is the full URL to the required item (i.e.
         commit.yaml or repo.md5 depending on the case).
 
