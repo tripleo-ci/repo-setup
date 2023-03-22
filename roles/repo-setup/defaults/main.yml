@@ -64,7 +64,7 @@ delorean_hash_label: latest
 known_hash_tags:
   - current
   - consistent
-  - tripleo-ci-testing
+  - podified-ci-testing
   - current-podified
   - current-podified-rdo
   - current-podified-rdo-internal

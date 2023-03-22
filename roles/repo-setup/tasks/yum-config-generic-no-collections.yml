@@ -15,7 +15,7 @@
   shell: >
     export PATH=$PATH:/usr/local/bin && \
     source {{ repo_setup_env_filepath }} && \
-    tripleo-yum-config repo \
+    repo-setup-yum-config repo \
       --name {{ item.reponame }} \
       --config-file-path "/etc/yum.repos.d/{{ item.filename }}" \
       {% if item.enabled is defined and not item.enabled|bool -%}

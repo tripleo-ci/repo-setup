@@ -1,7 +1,7 @@
 ---
 - name: Configure 'compose' repos using yum-config module
   become: true
-  tripleo.repos.yum_config:
+  repo_setup_yum_config:
     type: enable-compose-repos
     compose_url: "{{ item.compose_url }}"
     centos_release: "{{ item.release }}"

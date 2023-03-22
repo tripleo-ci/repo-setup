@@ -14,7 +14,6 @@ Requirements
 Role Variables
 --------------
 
-* `local_working_dir` -- the directory where tripleo-quickstart is located
 * `build_repo_dir` -- the directory where the DLRN repo is built.
   The variable defaults to the home directory of the user.
 * `artg_dlrn_repo_url` -- the URL of the DLRN repository
@@ -42,30 +41,6 @@ Role Variables
 * `dlrn_use_local_mirrors` -- use the local repo definitions from
   /etc/yum.repos.d/ for CentOS and DLRN while building packages; used upstream
 
-
-Example artg_change_list for just code changes:
-```yaml
-artg_change_list:
-    - host: "review.opendev.org"
-      project: "openstack/tripleo-heat-templates"
-      branch: "master"
-      refspec: "refs/changes/1/123456/1"
-    - host: ...
-```
-
-Example artg_change_list for code changes and package changes:
-```yaml
-artg_change_list:
-    - host: "review.opendev.org"
-      project: "openstack/tripleo-heat-templates"
-      branch: "master"
-      refspec: "refs/changes/1/123456/1"
-      distgit:
-          host: "ssh://user@review.rdoproject.org"
-          project: "openstack/tripleo-heat-templates-distgit"
-          refspec: "refs/changes/1/123456/1"
-    - host: ...
-```
 
 Gating with Zuul or Jenkins
 ---------------------------

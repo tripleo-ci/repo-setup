@@ -120,7 +120,7 @@ class TestGetHash(unittest.TestCase):
                 self.assertEqual("{}".format(component), main_res.component)
 
     def test_invalid_component_centos7(self, mock_config):
-        args = ['--os-version', 'centos7', '--component', 'tripleo']
+        args = ['--os-version', 'centos7', '--component', 'podified']
         sys.argv[1:] = args
         self.assertRaises(exc.HashInvalidParameter, lambda: tgh.main())
 
@@ -154,7 +154,7 @@ class TestGetHash(unittest.TestCase):
                 self.assertEqual("{}".format(os_v), main_res.os_version)
 
     def test_invalid_os_version(self, mock_config):
-        args = ['--os-version', 'rhelos99', '--component', 'tripleo']
+        args = ['--os-version', 'rhelos99', '--component', 'podified']
         sys.argv[1:] = args
         self.assertRaises(SystemExit, lambda: tgh.main())
 

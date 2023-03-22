@@ -13,8 +13,7 @@
     cacheable: true
   when: dlrn_hash_tag_newest is match(expected_commit_distro_hash_regex) or dlrn_hash_tag_newest is match(expected_aggregate_hash_regex)
 
-# explicitly set python3 in centos7 https://bugs.launchpad.net/tripleo/+bug/1943968
-- include_tasks: tripleo-get-hash-set-fact.yml
+- include_tasks: get-hash-set-fact.yml
   vars:
     search_tag: "{{ dlrn_hash_tag_newest }}"
     fact_name: "dlrn_hash_newest"
@@ -23,8 +22,7 @@
     - dlrn_hash_tag in known_hash_tags
     - ansible_distribution_major_version is version(8, '<')
 
-# dont set interpreter for centos8 https://bugs.launchpad.net/tripleo/+bug/1945127
-- include_tasks: tripleo-get-hash-set-fact.yml
+- include_tasks: get-hash-set-fact.yml
   vars:
     search_tag: "{{ dlrn_hash_tag_newest }}"
     fact_name: "dlrn_hash_newest"
@@ -33,7 +31,7 @@
     - ansible_distribution_major_version is version(8, '>=')
     - repo_setup_use_collections
 
-- include_tasks: tripleo-get-hash-set-fact-no-collections.yml
+- include_tasks: get-hash-set-fact-no-collections.yml
   vars:
     search_tag: "{{ dlrn_hash_tag_newest }}"
     fact_name: "dlrn_hash_newest"

@@ -62,25 +62,14 @@ dlrn_use_local_mirrors: false
 dlrn_pre_installed: false
 
 artg_skipped_projects:
-  - openstack/puppet-openstack-integration
-  - openstack/puppet-watcher
-  - openstack/tripleo-quickstart
-  - openstack/tripleo-quickstart-extras
-  - openstack/tripleo-upgrade
   - x/browbeat
-  - openstack/tripleo-ha-utils
   - openstack/grenade
   - openstack/project-config
-  - openstack/tripleo-ci
   - zuul/zuul-jobs
   - openstack/openstack-virtual-baremetal
   - openstack/openstack-ansible-os_tempest
   - openstack/ansible-role-python_venv_build
   - openstack/ansible-config_template
-  - openstack/ansible-role-collect-logs
-  - openstack/tripleo-ci-internal-jobs
-  - openstack/tripleo-ci-internal-config
-  - tripleo-environments
   - testproject
   - containers/podman
 
@@ -94,6 +83,3 @@ artg_branchless_projects:
   - openstack/diskimage-builder
   - openstack/octavia-tempest-plugin
   - openstack/tempest
-  - openstack/validations-common
-  - openstack/validations-libs
-  - x/tripleo-ipa

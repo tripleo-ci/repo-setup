@@ -90,10 +90,10 @@ repo_setup_ci_components:
   - manila
   - network
   - octavia
+  - podified
   - security
   - swift
   - tempest
-  - tripleo
   - ui
   - validation
 

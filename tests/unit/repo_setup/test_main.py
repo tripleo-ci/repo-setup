@@ -736,7 +736,7 @@ class TestValidate(testtools.TestCase):
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')
 
-    def test_current_and_tripleo(self):
+    def test_current_and_podified(self):
         self.args.repos = ['current', 'current-podified']
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')

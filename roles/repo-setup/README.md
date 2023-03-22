@@ -1,4 +1,4 @@
-tripleo-repo-setup
+repo-setup
 =========
 
 Set up yum repositories on host or in image
@@ -114,8 +114,8 @@ Settings example for repositories:
           - type: generic
             reponame: delorean
             filename: delorean.repo
-            baseurl: https://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tripleo/
-            hash_url: https://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-tripleo/delorean.repo
+            baseurl: https://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-podified/
+            hash_url: https://buildlogs.centos.org/centos/7/cloud/x86_64/rdo-trunk-master-podified/delorean.repo
             priority: 20
             releases:
               - master
@@ -128,21 +128,7 @@ Settings example for repositories:
             hash_url: https://trunk.rdoproject.org/centos7/current/delorean.repo
             priority: 10
             includepkgs:
-              - instack
-              - instack-undercloud
-              - os-apply-config
-              - os-collect-config
-              - os-net-config
-              - os-refresh-config
-              - python-tripleoclient*
-              - openstack-tripleo-common
-              - openstack-tripleo-heat-templates
-              - openstack-tripleo-image-elements
-              - openstack-tripleo
-              - openstack-tripleo-puppet-elements
-              - openstack-tripleo-ui
-              - puppet-*
-              - python*-paunch*
+              - ansible-config_template
             releases:
               - master
 

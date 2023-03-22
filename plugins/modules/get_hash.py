@@ -49,11 +49,11 @@ author:
 """
 
 EXAMPLES = r"""
-- name: Get the latest hash info for victoria centos8 tripleo component
+- name: Get the latest hash info for zed centos9 podified component
   repo_setup_get_hash:
-    os_version: centos8
-    release: victoria
-    component: tripleo
+    os_version: centos9
+    release: zed
+    component: podified
     dlrn_url: 'https://foo.bar.baz'
 """
 
