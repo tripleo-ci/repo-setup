@@ -29,12 +29,7 @@ NAME_RE = re.compile("name=(.+)")
 PRIORITY_RE = re.compile("priority=\\d+")
 # Packages to be included from delorean-current when using current-podified
 INCLUDE_PKGS = (
-    "includepkgs=instack,instack-undercloud,"
-    "os-apply-config,os-collect-config,os-net-config,"
-    "os-refresh-config,python*-tripleoclient,"
-    "openstack-repo-setup-*,openstack-puppet-modules,"
-    "ansible-role-tripleo*,puppet-*,python*-repo-setup-common,"
-    "python*-paunch*,repo-setup-ansible,ansible-config_template"
+    "includepkgs=ansible-config_template"
 )
 DEFAULT_OUTPUT_PATH = "/etc/yum.repos.d"
 DEFAULT_RDO_MIRROR = "https://trunk.rdoproject.org"
