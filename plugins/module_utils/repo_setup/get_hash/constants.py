@@ -40,6 +40,7 @@ CONFIG_PATH = "/usr/local/etc/repo_setup_get_hash/config.yaml"
 DEFAULT_CONFIG = {
     "repo_setup_releases": [
         "master",
+        "antelope",
         "zed",
         "wallaby",
         "victoria",
