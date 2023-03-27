@@ -7,7 +7,7 @@
         tgh_os_version: "{{ tgh_os_version_override | default(distro_ver) }}"
         tgh_dlrn_url: "{{ dlrn_baseurl|urlsplit('scheme') }}://{{ dlrn_baseurl|urlsplit('hostname') }}"
     - name: 'get-hash {{ search_tag }} for {{ tgh_release }} on {{ tgh_os_version }} from {{ tgh_dlrn_url }}'
-      tripleo.repos.get_hash:
+      repo_setup_get_hash:
         release: "{{ tgh_release }}"
         os_version: "{{ tgh_os_version }}"
         tag: "{{ search_tag }}"
@@ -18,7 +18,7 @@
   rescue:
     - include_tasks: set_fact_nodepool_rdo_proxy.yml
     - name: 'get-hash {{ search_tag }} for {{ tgh_release }} on {{ tgh_os_version }} from {{ nodepool_rdo_proxy }}'
-      tripleo.repos.get_hash:
+      repo_setup_get_hash:
         release: "{{ tgh_release }}"
         os_version: "{{ tgh_os_version }}"
         tag: "{{ search_tag }}"
