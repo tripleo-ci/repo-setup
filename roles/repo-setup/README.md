@@ -1,4 +1,4 @@
-tripleo-repo-setup
+repo-setup
 =========
 
 Set up yum repositories on host or in image
