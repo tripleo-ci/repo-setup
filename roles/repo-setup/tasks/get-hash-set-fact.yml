@@ -1,0 +1,32 @@
+---
+- name: 'resolve {{ search_tag }} with get-hash'
+  block:
+    - name: 'Set facts for get-hash parameters'
+      set_fact:
+        tgh_release: "{{ dir_release | default(release) }}"
+        tgh_os_version: "{{ tgh_os_version_override | default(distro_ver) }}"
+        tgh_dlrn_url: "{{ dlrn_baseurl|urlsplit('scheme') }}://{{ dlrn_baseurl|urlsplit('hostname') }}"
+    - name: 'get-hash {{ search_tag }} for {{ tgh_release }} on {{ tgh_os_version }} from {{ tgh_dlrn_url }}'
+      repo_setup_get_hash:
+        release: "{{ tgh_release }}"
+        os_version: "{{ tgh_os_version }}"
+        tag: "{{ search_tag }}"
+        dlrn_url: "{{ tgh_dlrn_url }}"
+      register: get_hash_result
+      until: get_hash_result is success
+      retries: 5
+  rescue:
+    - include_tasks: set_fact_nodepool_rdo_proxy.yml
+    - name: 'get-hash {{ search_tag }} for {{ tgh_release }} on {{ tgh_os_version }} from {{ nodepool_rdo_proxy }}'
+      repo_setup_get_hash:
+        release: "{{ tgh_release }}"
+        os_version: "{{ tgh_os_version }}"
+        tag: "{{ search_tag }}"
+        dlrn_url: "{{ nodepool_rdo_proxy }}"
+      register: get_hash_result
+      until: get_hash_result is success
+      retries: 5
+- name: "Set fact {{ fact_name }}->{{ get_hash_result['full_hash'] }}"
+  set_fact:
+    "{{ fact_name }}": "{{ get_hash_result['full_hash'] }}"
+    cacheable: true

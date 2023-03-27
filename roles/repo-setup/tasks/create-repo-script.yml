@@ -6,7 +6,7 @@
     mode: 0755
   when: not use_yum_config_module|default(false)|bool
 
-# When using tripleo-repos yum-config, split into 3 phases
+# When using repo-setup-yum-config, split into 3 phases
 - block:
     - name: Create script - commands before repo setup
       template:
