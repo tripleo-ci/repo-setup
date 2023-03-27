@@ -6,6 +6,7 @@ dlrn_url: 'https://trunk.rdoproject.org'
 
 repo_setup_releases:
   - master
+  - antelope
   - zed
   - wallaby
   - victoria
