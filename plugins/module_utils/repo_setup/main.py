@@ -47,8 +47,8 @@ DEFAULT_MIRROR_MAP = {
     "centos9": "http://mirror.stream.centos.org",
     "ubi8": "http://mirror.centos.org",
     "ubi9": "http://mirror.stream.centos.org",
-    "rhel8": "https://trunk.rdoproject.org",
-    "rhel9": "https://trunk.rdoproject.org",
+    "redhat8": "https://trunk.rdoproject.org",
+    "redhat9": "https://trunk.rdoproject.org",
 }
 CEPH_REPO_TEMPLATE = """
 [repo-setup-centos-ceph-%(ceph_release)s]
@@ -118,8 +118,8 @@ SUPPORTED_DISTROS = [
     ("centos", "8"),
     ("centos", "9"),
     ("fedora", ""),
-    ("rhel", "8"),
-    ("rhel", "9"),
+    ("redhat", "8"),
+    ("redhat", "9"),
     ("ubi", "8"),
     ("ubi", "9"),  # a subcase of the rhel distro
 ]
@@ -548,7 +548,7 @@ def _get_rhel_trunk_candidate_repos(args, base_path):
 
 def _install_repos(args, base_path):
     def install_deps(args, base_path):
-        if 'rhel' in args.distro:
+        if 'redhat' in args.distro:
             content = _get_rhel_trunk_candidate_repos(args, base_path)
             _write_repo(content, args.output_path, name="osp-trunk-candidate")
         else:

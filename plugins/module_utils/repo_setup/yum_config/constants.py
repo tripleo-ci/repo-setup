@@ -76,6 +76,6 @@ DNF Manager constants
 """
 DNF_MODULE_MINIMAL_DISTRO_VERSIONS = [
     {"distro": "centos", "min_version": 8},
-    {"distro": "rhel", "min_version": 8},
+    {"distro": "redhat", "min_version": 8},
     {"distro": "fedora", "min_version": 22},
 ]
