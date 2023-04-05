@@ -1,4 +1,4 @@
-repo-setup
+repo_setup
 =========
 
 Set up yum repositories on host or in image
@@ -90,7 +90,7 @@ parameters) is always nice for users too:
       hosts: undercloud
       gather_facts: false
       roles:
-        - repo-setup
+        - repo_setup
 
 Settings example for repositories:
 

@@ -1,4 +1,4 @@
-build-test-packages
+build_test_packages
 ===================
 
 An Ansible role for generating custom RPMSs from upstream Gerrit changes in the
@@ -92,7 +92,7 @@ Example Playbook
 - name: Build custom RPMs
   hosts: virthost
   roles:
-    - build-test-packages
+    - build_test_packages
 ```
 
 License
