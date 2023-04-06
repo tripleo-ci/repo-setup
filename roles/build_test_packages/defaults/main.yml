@@ -9,6 +9,7 @@ artg_compressed_gating_repo: "/home/stack/gating_repo.tar.gz"
 artg_build_one: true
 artg_rdo_packages: []
 ansible_coll_packages: []
+yum_repos_dir: "/etc/yum.repos.d"
 dlrn_target: >-
   {%- if (ansible_distribution == "RedHat") and
   (dlrn_use_local_mirrors|bool) -%}

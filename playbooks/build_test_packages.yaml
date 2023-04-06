@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+  tasks:
+    - ansible.builtin.include_role:
+        name: build_test_packages
+      vars:
+        dlrn_target: centos9-stream
+        release: master
+        yum_repos_dir: '/tmp/repos'
+        dlrn_use_local_mirrors: true
+        initial_dlrn_config: centos9-local
+        dlrn_baseurl: https://trunk.rdoproject.org/centos9-master
+        artg_compressed_gating_repo: "{{ ansible_user_dir }}/gating_repo.tar.gz"
+        timestamper_cmd: >-
+          | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
+        artg_change_list:
+          - host: "https://review.opendev.org"
+            project: "openstack/neutron-tempest-plugin"
+            branch: "master"
+            refspec: refs/changes/61/879561/1
