@@ -492,7 +492,8 @@ enabled=1
                               '\n[repo-setup-centos-baseos]\n'
                               'name=repo-setup-centos-baseos\n'
                               'baseurl=mirror/9-stream/BaseOS'
-                              '/$basearch/os/\ngpgcheck=0\nenabled=1\n'),
+                              '/$basearch/os/\ngpgcheck=0\nenabled=1\n'
+                              'exclude=gnupg2-2.3.3-3.el9.x86_64\n'),
                               'test')
                           ],
                          mock_write.mock_calls)
