@@ -109,7 +109,6 @@ name=repo-setup-centos-baseos
 baseurl=%(mirror)s/%(legacy_url)s%(stream)s/BaseOS/$basearch/os/
 gpgcheck=0
 enabled=1
-exclude=gnupg2-2.3.3-3.el9.x86_64
 """
 
 
