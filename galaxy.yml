@@ -4,7 +4,7 @@ version: 0.0.1
 readme: README.md
 authors:
   - Red Hat
-description: TripleO Repos
+description: OpenStack Repository setup
 build_ignore:
   - "*.egg-info"
   - .DS_Store
@@ -35,5 +35,5 @@ build_ignore:
   # that is not needed for ansible modules and it would upset sanity (pylint)
   - plugins/module_utils/repo_setup/main.py
 
-repository: https://github.com/ci-framework/repo-setup
+repository: https://github.com/openstack-k8s-operators/repo-setup
 license_file: LICENSE
