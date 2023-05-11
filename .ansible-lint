@@ -1,0 +1,6 @@
+exclude_paths:
+    - galaxy.yml
+    - meta/runtime.yml
+    - playbooks/*
+    - roles/*
+    - .github/workflows/*
