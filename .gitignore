@@ -22,4 +22,3 @@ lib64
 
 # built ansible collection
 *.tar.gz
-
