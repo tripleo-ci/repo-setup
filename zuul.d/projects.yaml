@@ -1,0 +1,6 @@
+---
+- project:
+    name: openstack-k8s-operators/repo-setup
+    github-check:
+      jobs:
+        - install-yaml-molecule

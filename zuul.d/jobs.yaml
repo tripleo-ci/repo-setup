@@ -1,0 +1,9 @@
+---
+- job:
+    name: install-yaml-molecule
+    parent: cifmw-molecule-base
+    required-projects:
+      - openstack-k8s-operators/install_yamls
+      - github.com/openstack-k8s-operators/ci-framework
+    vars:
+      TEST_RUN: repo_setup
