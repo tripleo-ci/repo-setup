@@ -81,5 +81,5 @@ DEFAULT_CONFIG = {
         "ui",
         "validation",
     ],
-    "os_versions": ["centos7", "centos8", "centos9", "rhel8", "rhel9"],
+    "os_versions": ["centos7", "centos8", "centos9", "redhat8", "redhat9"],
 }
