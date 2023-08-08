@@ -138,6 +138,7 @@ class HashInfo:
 
         repo_url = self._resolve_repo_url(config["dlrn_url"])
         self.dlrn_url = repo_url
+        self.dlrn_api_url = self._get_dlrn_api_url(config["dlrn_url"])
 
         repo_url_response, status = http_get(repo_url)
 
@@ -200,6 +201,20 @@ class HashInfo:
             )
         logging.debug("repo_url is %s", repo_url)
         return repo_url
+
+    def _get_dlrn_api_url(self, dlrn_url):
+        """
+        Returns the DLRN API url
+        Here is the format of DLRN API url:
+            * antelope: https://trunk.rdoproject.org/api-centos9-antelope
+            * master: https://trunk.rdoproject.org/api-centos9-master-uc
+        """
+        dlrn_api_url = "%s/api-%s-%s" % (dlrn_url, self.os_version, self.release)
+
+        if self.release == "master":
+            dlrn_api_url = "%s-uc" % dlrn_api_url
+        logging.debug("dlrn_api_url is %s", dlrn_api_url)
+        return dlrn_api_url
 
     def _hashes_from_commit_yaml(self, delorean_result):
         """This function is used when a commit.yaml file is returned

@@ -83,6 +83,11 @@ dlrn_url:
     type: str
     returned: always
     sample: 'https://trunk.rdoproject.org/centos8-master/current-podified/delorean.repo.md5'  # noqa E501
+dlrn_api_url:
+    description: The dlrn API server url for further interaction with dlrn server.
+    type: str
+    returned: always
+    sample: 'https://trunk.rdoproject.org/api-centos-master-uc'  # noqa E501
 """
 
 from ansible.module_utils.basic import AnsibleModule  # noqa: E402
@@ -126,6 +131,7 @@ def run_module():
         result["full_hash"] = hash_result.full_hash
         result["extended_hash"] = hash_result.extended_hash
         result["dlrn_url"] = hash_result.dlrn_url
+        result["dlrn_api_url"] = hash_result.dlrn_api_url
         result["success"] = True
     except Exception as exc:
         result["error"] = str(exc)

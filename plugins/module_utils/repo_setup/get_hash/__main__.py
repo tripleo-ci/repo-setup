@@ -101,6 +101,7 @@ def main():
                      "full_hash": repo_setup_hash_info.full_hash,
                      "extended_hash": repo_setup_hash_info.extended_hash,
                      "dlrn_url": repo_setup_hash_info.dlrn_url,
+                     "dlrn_api_url": repo_setup_hash_info.dlrn_api_url,
                      "os_version": repo_setup_hash_info.os_version,
                      "release": repo_setup_hash_info.release,
                      "component": repo_setup_hash_info.component,
