@@ -105,6 +105,7 @@ class TestTripleORepos(testtools.TestCase):
     def test_install_repos_current(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['current']
+        args.dlrn_hash_tag = None
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
@@ -139,6 +140,7 @@ class TestTripleORepos(testtools.TestCase):
     def test_install_repos_current_podified(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['current-podified']
+        args.dlrn_hash_tag = None
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
@@ -159,6 +161,7 @@ class TestTripleORepos(testtools.TestCase):
     def test_install_repos_podified_ci_testing(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['podified-ci-testing']
+        args.dlrn_hash_tag = None
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'fake'
@@ -207,6 +210,7 @@ class TestTripleORepos(testtools.TestCase):
     def test_install_repos_centos8(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['current']
+        args.dlrn_hash_tag = None
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'centos8'
@@ -247,6 +251,7 @@ class TestTripleORepos(testtools.TestCase):
         args.stream = True
         args.no_stream = False
         args.mirror = 'mirror'
+        args.dlrn_hash_tag = None
         mock_get.return_value = '[delorean]\nMr. Fusion'
         main._install_repos(args, 'roads/')
         self.assertEqual([mock.call('roads/current/delorean.repo', args),
@@ -276,6 +281,7 @@ class TestTripleORepos(testtools.TestCase):
     def test_install_repos_centos9_stream(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['current']
+        args.dlrn_hash_tag = None
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'centos9'
@@ -323,6 +329,7 @@ class TestTripleORepos(testtools.TestCase):
     def test_install_repos_centos8_no_stream(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['current']
+        args.dlrn_hash_tag = None
         args.branch = 'master'
         args.output_path = 'test'
         args.distro = 'centos8'

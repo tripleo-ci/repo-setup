@@ -45,7 +45,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             mock_hash_info = thi.HashInfo(
-                'centos8', 'master', 'common', 'current-podified'
+                'centos8', 'master', 'common', 'current-podified', None
             )
             actual_result = mock_hash_info._hashes_from_commit_yaml(
                 sample_commit_yaml
@@ -58,7 +58,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             c8_component_hash_info = thi.HashInfo(
-                'centos8', 'master', 'common', 'current-podified'
+                'centos8', 'master', 'common', 'current-podified', None
             )
             repo_url = c8_component_hash_info._resolve_repo_url("https://woo")
             self.assertEqual(
@@ -72,7 +72,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             c8_hash_info = thi.HashInfo(
-                'centos8', 'master', None, 'current-podified'
+                'centos8', 'master', None, 'current-podified', None
             )
             repo_url = c8_hash_info._resolve_repo_url("https://woo")
             self.assertEqual(
@@ -86,7 +86,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             created_hash_info = thi.HashInfo(
-                'centos8', 'master', None, 'current-podified'
+                'centos8', 'master', None, 'current-podified', None
             )
             self.assertIsInstance(created_hash_info, thi.HashInfo)
             self.assertEqual(
@@ -105,7 +105,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             created_hash_info = thi.HashInfo(
-                'centos8', 'victoria', 'common', 'podified-ci-testing'
+                'centos8', 'victoria', 'common', 'podified-ci-testing', None
             )
             self.assertIsInstance(created_hash_info, thi.HashInfo)
             self.assertEqual(created_hash_info.full_hash, expected_full_hash)
@@ -126,7 +126,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             mock_hash_info = thi.HashInfo(
-                'centos8', 'master', 'common', 'current-podified',
+                'centos8', 'master', 'common', 'current-podified', None,
                 {'dlrn_url': 'https://foo.bar.baz'}
             )
             self.assertEqual(expected_dlrn_url, mock_hash_info.dlrn_url)
@@ -138,7 +138,7 @@ class TestGetHashInfo(unittest.TestCase):
         with patch(
                 'repo_setup.get_hash.hash_info.http_get', mocked):
             mock_hash_info = thi.HashInfo(
-                'centos8', 'master', 'common', 'current-podified',
+                'centos8', 'master', 'common', 'current-podified', None,
                 {'dlrn_url': ''}
             )
             self.assertEqual(expected_dlrn_url, mock_hash_info.dlrn_url)
@@ -158,6 +158,7 @@ class TestGetHashInfo(unittest.TestCase):
                     'master',
                     'common',
                     'current-podified',
+                    None,
                     {'dlrn_url': 'https://server.ok'},
                 )
             debug_msgs = [

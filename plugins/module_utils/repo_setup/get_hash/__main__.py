@@ -66,6 +66,11 @@ def main():
         action="store_true",
         help=("Enable JSON output"),
     )
+    parser.add_argument(
+        "--dlrn-hash-tag",
+        default=None,
+        help=("Pass a particular dlrn hash tag"),
+    )
 
     args = parser.parse_args()
 
@@ -86,6 +91,7 @@ def main():
         args.release,
         args.component,
         args.tag,
+        args.dlrn_hash_tag,
         config,
     )
     if args.json:

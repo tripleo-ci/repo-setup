@@ -120,7 +120,7 @@ class HashInfo:
                 result_config[k] = loaded_config[k]
         return result_config
 
-    def __init__(self, os_version, release, component, tag, config=None):
+    def __init__(self, os_version, release, component, tag, dlrn_hash_tag=None, config=None):
         """Create a new HashInfo object
 
         :param os_version: The OS and version e.g. centos8
@@ -135,6 +135,7 @@ class HashInfo:
         self.release = release
         self.component = component
         self.tag = tag
+        self.dlrn_hash_tag = dlrn_hash_tag
 
         repo_url = self._resolve_repo_url(config["dlrn_url"])
         self.dlrn_url = repo_url
@@ -191,6 +192,19 @@ class HashInfo:
                 self.release,
                 self.tag,
             )
+
+        # Fix the repo_url for dlrn_hash_tag
+        if self.dlrn_hash_tag:
+            for _context in ['delorean.repo.md5', 'commit.yaml']:
+                if repo_url.endswith(_context):
+                    _hash = self.dlrn_hash_tag
+                    _data = repo_url.split(_context)
+                    repo_url = '{}{}/{}/{}/{}'.format(_data[0],
+                                                      str(_hash[:2]),
+                                                      str(_hash[2:4]),
+                                                      str(_hash),
+                                                      _context)
+
         logging.debug("repo_url is %s", repo_url)
         return repo_url
 
