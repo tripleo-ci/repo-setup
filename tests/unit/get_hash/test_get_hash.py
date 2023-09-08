@@ -20,7 +20,6 @@ from unittest import mock
 from unittest.mock import mock_open, MagicMock, patch
 import yaml
 
-import repo_setup.get_hash.exceptions as exc
 import repo_setup.get_hash.__main__ as tgh
 from . import fakes as test_fakes
 
@@ -119,31 +118,18 @@ class TestGetHash(unittest.TestCase):
                 )
                 self.assertEqual("{}".format(component), main_res.component)
 
-    def test_invalid_component_centos7(self, mock_config):
-        args = ['--os-version', 'centos7', '--component', 'tripleo']
-        sys.argv[1:] = args
-        self.assertRaises(exc.HashInvalidParameter, lambda: tgh.main())
-
     def test_valid_os_version(self, mock_config):
         config_file = open("fake_config_file")  # open is mocked at class level
         config_yaml = yaml.safe_load(config_file.read())
         config_file.close()
         # interate for each supported os_version
         for os_v in config_yaml['os_versions']:
-            if '7' in os_v:
-                mocked = MagicMock(
-                    return_value=(test_fakes.TEST_COMMIT_YAML_CENTOS_7, 200))
-                expected_url = (
-                    "https://trunk.rdoproject.org/{}-master/"
-                    "current-podified/commit.yaml".format(os_v)
-                )
-            else:
-                mocked = MagicMock(
-                    return_value=(test_fakes.TEST_REPO_MD5, 200))
-                expected_url = (
-                    "https://trunk.rdoproject.org/{}-master/"
-                    "current-podified/delorean.repo.md5".format(os_v)
-                )
+            mocked = MagicMock(
+                return_value=(test_fakes.TEST_REPO_MD5, 200))
+            expected_url = (
+                "https://trunk.rdoproject.org/{}-master/"
+                "current-podified/delorean.repo.md5".format(os_v)
+            )
             with patch(
                     'repo_setup.get_hash.hash_info.http_get',
                     mocked):
@@ -154,7 +140,7 @@ class TestGetHash(unittest.TestCase):
                 self.assertEqual("{}".format(os_v), main_res.os_version)
 
     def test_invalid_os_version(self, mock_config):
-        args = ['--os-version', 'rhelos99', '--component', 'tripleo']
+        args = ['--os-version', 'rhelos99', '--component', 'podified']
         sys.argv[1:] = args
         self.assertRaises(SystemExit, lambda: tgh.main())
 

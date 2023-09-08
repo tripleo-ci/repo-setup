@@ -38,28 +38,6 @@ TEST_COMMIT_YAML_COMPONENT = """
       type: rpm
 """  # noqa
 
-TEST_COMMIT_YAML_CENTOS_7 = """
-    commits:
-    - artifacts: repos/b5/ef/b5ef03c9c939db551b03e9490edc6981ff582035_76ebc465/openstack-repo-setup-heat-templates-12.1.1-0.20200227052810.b5ef03c.el7.src.rpm,repos/b5/ef/b5ef03c9c939db551b03e9490edc6981ff582035_76ebc465/openstack-repo-setup-heat-templates-12.1.1-0.20200227052810.b5ef03c.el7.noarch.rpm
-      commit_branch: master
-      commit_hash: b5ef03c9c939db551b03e9490edc6981ff582035
-      component: None
-      distgit_dir: /home/centos-master-uc/data/openstack-repo-setup-heat-templates_distro/
-      distro_hash: 76ebc4655502820b7677579349fd500eeca292e6
-      dt_build: '1582781227'
-      dt_commit: '1582780705.0'
-      dt_distro: '1580409403'
-      dt_extended: '0'
-      extended_hash: None
-      flags: '0'
-      id: '86894'
-      notes: OK
-      project_name: openstack-repo-setup-heat-templates
-      repo_dir: /home/centos-master-uc/data/openstack-repo-setup-heat-templates
-      status: SUCCESS
-      type: rpm
-"""  # noqa
-
 TEST_REPO_MD5 = 'a96366960d5f9b08f78075b7560514e7'
 
 BAD_CONFIG_FILE = """
