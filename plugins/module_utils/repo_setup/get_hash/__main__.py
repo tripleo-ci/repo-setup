@@ -20,12 +20,6 @@ import logging
 import sys
 from repo_setup.utils import load_logging
 from repo_setup.get_hash.hash_info import HashInfo
-import repo_setup.get_hash.exceptions as exc
-
-
-def _validate_args(parsed_args):
-    if parsed_args.os_version == "centos7" and (parsed_args.component is not None):
-        raise exc.HashInvalidParameter("Cannot specify component for centos 7")
 
 
 def main():
@@ -78,7 +72,6 @@ def main():
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
         logging.debug("Logging level set to DEBUG")
-    _validate_args(args)
 
     if args.dlrn_url is not None:
         logging.debug(

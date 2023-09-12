@@ -27,22 +27,11 @@ __metaclass__ = type
 TITLE_RE = re.compile("\\[(.*)\\]")
 NAME_RE = re.compile("name=(.+)")
 PRIORITY_RE = re.compile("priority=\\d+")
-# Packages to be included from delorean-current when using current-podified
-INCLUDE_PKGS = (
-    "includepkgs=instack,instack-undercloud,"
-    "os-apply-config,os-collect-config,os-net-config,"
-    "os-refresh-config,python*-tripleoclient,"
-    "openstack-repo-setup-*,openstack-puppet-modules,"
-    "ansible-role-tripleo*,puppet-*,python*-repo-setup-common,"
-    "python*-paunch*,repo-setup-ansible,ansible-config_template"
-)
 DEFAULT_OUTPUT_PATH = "/etc/yum.repos.d"
 DEFAULT_RDO_MIRROR = "https://trunk.rdoproject.org"
 
 # RHEL is only provided to licensed cloud providers via RHUI
 DEFAULT_MIRROR_MAP = {
-    "fedora": "https://mirrors.fedoraproject.org",
-    "centos7": "http://mirror.centos.org",
     "centos8": "http://mirror.centos.org",
     "centos9": "http://mirror.stream.centos.org",
     "ubi8": "http://mirror.centos.org",
@@ -68,13 +57,6 @@ CEPH_RDO_REPO_TEMPLATE = """
 [repo-setup-centos-ceph-%(ceph_release)s]
 name=repo-setup-centos-ceph-%(ceph_release)s
 baseurl=https://trunk.rdoproject.org/centos8-master/deps/storage/%(ceph_release)s/
-gpgcheck=0
-enabled=1
-"""
-OPSTOOLS_REPO_TEMPLATE = """
-[repo-setup-centos-opstools]
-name=repo-setup-centos-opstools
-baseurl=%(mirror)s/centos/7/opstools/$basearch/
 gpgcheck=0
 enabled=1
 """
@@ -114,10 +96,8 @@ enabled=1
 
 # unversioned fedora added for backwards compatibility
 SUPPORTED_DISTROS = [
-    ("centos", "7"),
     ("centos", "8"),
     ("centos", "9"),
-    ("fedora", ""),
     ("rhel", "8"),
     ("rhel", "9"),
     ("ubi", "8"),
@@ -202,7 +182,6 @@ def _parse_args(distro_id, distro_major_version_id):
             "current-podified",
             "current-podified-dev",
             "ceph",
-            "opstools",
             "podified-ci-testing",
             "current-podified-rdo",
         ],
@@ -267,9 +246,6 @@ def _parse_args(distro_id, distro_major_version_id):
 
     # Default mirror for args.distro (which defaults to 'distro')
     default_mirror = DEFAULT_MIRROR_MAP.get(args.distro, None)
-    if default_mirror is None and "fedora" in args.distro:
-        # We don't have different mirrors for specific fedora releases
-        default_mirror = DEFAULT_MIRROR_MAP.get("fedora", None)
 
     if args.mirror is None:
         args.mirror = default_mirror
@@ -323,11 +299,8 @@ def _validate_distro_repos(args):
             "ceph",
             "current",
             "current-podified",
-            "current-podified-dev",
             "deps",
             "podified-ci-testing",
-            "opstools",
-            "current-podified-rdo",
         ]
     invalid_repos = [x for x in args.repos if x not in valid_repos]
     if len(invalid_repos) > 0:
@@ -367,13 +340,13 @@ def _validate_podified_ci_testing(repos):
     which is enabled regardless.
     """
     if "podified-ci-testing" in repos and len(repos) > 1:
-        if "deps" in repos or "ceph" in repos or "opstools" in repos:
+        if "deps" in repos or "ceph" in repos:
             return True
         else:
             raise InvalidArguments(
                 "Cannot use podified-ci-testing at the "
                 "same time as other repos, except "
-                "deps|ceph|opstools."
+                "deps|ceph."
             )
     return True
 
@@ -419,12 +392,12 @@ def _remove_existing(args):
     if args.distro in ["ubi8", "ubi9"]:
         regex = (
             "^(BaseOS|AppStream|delorean|repo-setup-centos-"
-            "(opstools|ceph|highavailability|powertools)).*.repo"
+            "(ceph|highavailability|powertools)).*.repo"
         )
     else:
         regex = (
             "^(delorean|repo-setup-centos-"
-            "(opstools|ceph|highavailability|powertools)).*.repo"
+            "(ceph|highavailability|powertools)).*.repo"
         )
     pattern = re.compile(regex)
     if os.path.exists("/etc/distro.repos.d"):
@@ -460,24 +433,11 @@ def _get_base_path(args):
     return "%s/%s/" % (args.rdo_mirror, distro_branch)
 
 
-def _install_priorities():
-    try:
-        subprocess.check_call(["yum", "install", "-y", "yum-plugin-priorities"])
-    except subprocess.CalledProcessError as e:
-        print(
-            "ERROR: Failed to install yum-plugin-priorities\n%s\n%s" % (e.cmd, e.output)
-        )
-        raise
-
-
 def _create_ceph(args, release):
     """Generate a Ceph repo file for release"""
     centos_release = "9-stream"
     template = CEPH_SIG_REPO_TEMPLATE
-    if args.distro == "centos7":
-        centos_release = "7"
-        template = CEPH_REPO_TEMPLATE
-    elif args.distro == "centos8" and release == "nautilus":
+    if args.distro == "centos8" and release == "nautilus":
         template = CEPH_RDO_REPO_TEMPLATE
     elif args.distro == "centos8":
         centos_release = "8-stream"
@@ -501,15 +461,6 @@ def _change_priority(content, new_priority):
                 new_content.append("priority=%d" % new_priority)
         new_content = "\n".join(new_content)
     return new_content
-
-
-def _add_includepkgs(content):
-    new_content = []
-    for line in content.split("\n"):
-        new_content.append(line)
-        if line.startswith("["):
-            new_content.append(INCLUDE_PKGS)
-    return "\n".join(new_content)
 
 
 def _inject_mirrors(content, args):
@@ -566,44 +517,12 @@ def _install_repos(args, base_path):
             content = _get_repo(base_path + "current-podified/delorean.repo", args)
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
-        elif repo == "current-podified-dev":
-            content = _get_repo(base_path + "delorean-deps.repo", args)
-            _write_repo(content, args.output_path)
-            content = _get_repo(base_path + "current-podified/delorean.repo", args)
-            content = TITLE_RE.sub("[\\1-current-podified]", content)
-            content = NAME_RE.sub("name=\\1-current-podified", content)
-            # We need to twiddle priorities since we're mixing multiple repos
-            # that are generated with the same priority.
-            content = _change_priority(content, 20)
-            _write_repo(content, args.output_path, name="delorean-current-podified")
-            content = _get_repo(base_path + "current/delorean.repo", args)
-            content = _add_includepkgs(content)
-            content = _change_priority(content, 10)
-            _write_repo(content, args.output_path, name="delorean")
         elif repo == "podified-ci-testing":
             content = _get_repo(base_path + "podified-ci-testing/delorean.repo", args)
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
-        elif repo == "current-podified-rdo":
-            content = _get_repo(
-                base_path + "current-podified-rdo/delorean.repo", args
-            )
-            _write_repo(content, args.output_path)
-            install_deps(args, base_path)
         elif repo == "ceph":
-            if args.branch in ["liberty", "mitaka"]:
-                content = _create_ceph(args, "hammer")
-            elif args.branch in ["newton", "ocata", "pike"]:
-                content = _create_ceph(args, "jewel")
-            elif args.branch in ["queens", "rocky"]:
-                content = _create_ceph(args, "luminous")
-            elif args.branch in ["stein", "train", "ussuri", "victoria"]:
-                content = _create_ceph(args, "nautilus")
-            else:
-                content = _create_ceph(args, "pacific")
-            _write_repo(content, args.output_path)
-        elif repo == "opstools":
-            content = OPSTOOLS_REPO_TEMPLATE % {"mirror": args.mirror}
+            content = _create_ceph(args, "pacific")
             _write_repo(content, args.output_path)
         else:
             raise InvalidArguments('Invalid repo "%s" specified' % repo)
@@ -628,9 +547,6 @@ def _install_repos(args, base_path):
         # Add extra options to APPSTREAM_REPO_TEMPLATE because of
         # rhbz/1961558 and lpbz/1929634
         extra = ""
-        if args.branch in ["train", "ussuri", "victoria"]:
-            extra = "exclude=edk2-ovmf-20200602gitca407c7246bf-5*"
-
         distro_name = str(distro[-1]) + "-stream"
         content = APPSTREAM_REPO_TEMPLATE % {
             "mirror": args.mirror,
@@ -693,7 +609,7 @@ def _install_repos(args, base_path):
 
 
 def _run_pkg_clean(distro):
-    pkg_mgr = "yum" if distro == "centos7" else "dnf"
+    pkg_mgr = "dnf"
     try:
         subprocess.check_call([pkg_mgr, "clean", "metadata"])
     except subprocess.CalledProcessError:
@@ -706,8 +622,6 @@ def main():
     args = _parse_args(distro_id, distro_major_version_id)
     _validate_args(args, distro_name, distro_major_version_id)
     base_path = _get_base_path(args)
-    if (distro_name.lower(), distro_major_version_id) == ("centos", "7"):
-        _install_priorities()
     _remove_existing(args)
     _install_repos(args, base_path)
     _run_pkg_clean(args.distro)

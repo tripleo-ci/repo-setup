@@ -80,20 +80,6 @@ class TestGetHashInfo(unittest.TestCase):
 
             )
 
-    def test_resolve_repo_url_centos7_commit_yaml(self, mock_config):
-        mocked = MagicMock(
-            return_value=(test_fakes.TEST_COMMIT_YAML_CENTOS_7, 200))
-        with patch(
-                'repo_setup.get_hash.hash_info.http_get', mocked):
-            c7_hash_info = thi.HashInfo(
-                'centos7', 'master', None, 'current-podified'
-            )
-            repo_url = c7_hash_info._resolve_repo_url("https://woo")
-            self.assertEqual(
-                repo_url, 'https://woo/centos7-master/current-podified/commit.yaml'  # noqa
-
-            )
-
     def test_get_hash_info_centos8_md5(self, mock_config):
         mocked = MagicMock(
             return_value=(test_fakes.TEST_REPO_MD5, 200))
@@ -132,46 +118,6 @@ class TestGetHashInfo(unittest.TestCase):
             self.assertEqual(created_hash_info.component, 'common')
             self.assertEqual(created_hash_info.tag, 'podified-ci-testing')
             self.assertEqual(created_hash_info.release, 'victoria')
-
-    def test_get_hash_info_centos7_commit_yaml(self, mock_config):
-        expected_commit_hash = 'b5ef03c9c939db551b03e9490edc6981ff582035'
-        expected_distro_hash = '76ebc4655502820b7677579349fd500eeca292e6'
-        expected_full_hash = 'b5ef03c9c939db551b03e9490edc6981ff582035_76ebc465'  # noqa
-        mocked = MagicMock(
-            return_value=(test_fakes.TEST_COMMIT_YAML_CENTOS_7, 200))
-        with patch(
-                'repo_setup.get_hash.hash_info.http_get', mocked):
-            created_hash_info = thi.HashInfo(
-                'centos7', 'master', None, 'podified-ci-testing'
-            )
-            self.assertIsInstance(created_hash_info, thi.HashInfo)
-            self.assertEqual(created_hash_info.full_hash, expected_full_hash)
-            self.assertEqual(
-                created_hash_info.distro_hash, expected_distro_hash
-            )
-            self.assertEqual(
-                created_hash_info.commit_hash, expected_commit_hash
-            )
-            self.assertEqual(created_hash_info.os_version, 'centos7')
-
-    def test_bad_config_file(self, mock_config):
-        mocked = MagicMock(
-            return_value=test_fakes.TEST_COMMIT_YAML_CENTOS_7)
-        with patch(
-                'repo_setup.get_hash.hash_info.http_get', mocked):
-            with mock.patch(
-                'builtins.open',
-                new_callable=mock_open,
-                read_data=test_fakes.BAD_CONFIG_FILE,
-            ):
-                self.assertRaises(
-                    exc.HashInvalidConfig,
-                    thi.HashInfo,
-                    'centos7',
-                    'master',
-                    None,
-                    'podified-ci-testing',
-                )
 
     def test_override_config_dlrn_url(self, mock_config):
         expected_dlrn_url = 'https://foo.bar.baz/centos8-master/component/common/current-podified/commit.yaml'  # noqa

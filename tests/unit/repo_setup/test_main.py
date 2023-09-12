@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import subprocess
 import sys
 from unittest import mock
 
@@ -43,28 +42,6 @@ class TestTripleORepos(testtools.TestCase):
         mock_remove.assert_called_once_with(args)
         mock_clean.assert_called_once_with('centos8')
 
-    @mock.patch('repo_setup.main._get_distro')
-    @mock.patch('sys.argv', ['repo-setup', 'current', '-d', 'fedora'])
-    @mock.patch('repo_setup.main._run_pkg_clean')
-    @mock.patch('repo_setup.main._validate_args')
-    @mock.patch('repo_setup.main._get_base_path')
-    @mock.patch('repo_setup.main._install_priorities')
-    @mock.patch('repo_setup.main._remove_existing')
-    @mock.patch('repo_setup.main._install_repos')
-    def test_main_fedora(self, mock_install, mock_remove, mock_ip, mock_gbp,
-                         mock_validate, mock_clean, mock_distro):
-        mock_distro.return_value = ('centos', '8', 'CentOS 8')
-        args = main._parse_args('centos', '8')
-        mock_path = mock.Mock()
-        mock_gbp.return_value = mock_path
-        main.main()
-        mock_validate.assert_called_once_with(args, 'CentOS 8', '8')
-        mock_gbp.assert_called_once_with(args)
-        assert not mock_ip.called, '_install_priorities should no tbe called'
-        mock_remove.assert_called_once_with(args)
-        mock_install.assert_called_once_with(args, mock_path)
-        mock_clean.assert_called_once_with('fedora')
-
     @mock.patch('requests.get')
     def test_get_repo(self, mock_get):
         mock_response = mock.Mock()
@@ -94,7 +71,6 @@ class TestTripleORepos(testtools.TestCase):
     def test_remove_existing(self, mock_exists, mock_remove, mock_listdir):
         fake_list = ['foo.repo', 'delorean.repo',
                      'delorean-current-podified.repo',
-                     'repo-setup-centos-opstools.repo',
                      'repo-setup-centos-highavailability.repo']
         mock_exists.return_value = [True, False, True, False, True,
                                     False, False, True]
@@ -108,9 +84,6 @@ class TestTripleORepos(testtools.TestCase):
                                 'delorean-current-podified.repo'),
                       mock_remove.mock_calls)
         self.assertIn(
-            mock.call('/etc/yum.repos.d/repo-setup-centos-opstools.repo'),
-            mock_remove.mock_calls)
-        self.assertIn(
             mock.call('/etc/distro.repos.d/'
                       'repo-setup-centos-highavailability.repo'),
             mock_remove.mock_calls)
@@ -122,30 +95,10 @@ class TestTripleORepos(testtools.TestCase):
     def test_get_base_path(self):
         args = mock.Mock()
         args.branch = 'master'
-        args.distro = 'centos7'
+        args.distro = 'centos9'
         args.rdo_mirror = 'http://trunk.rdoproject.org'
         path = main._get_base_path(args)
-        self.assertEqual('http://trunk.rdoproject.org/centos7-master/', path)
-
-    def test_get_base_path_fedora(self):
-        args = mock.Mock()
-        args.branch = 'master'
-        args.distro = 'fedora'
-        args.rdo_mirror = 'http://trunk.rdoproject.org'
-        path = main._get_base_path(args)
-        self.assertEqual('http://trunk.rdoproject.org/fedora-master/', path)
-
-    @mock.patch('subprocess.check_call')
-    def test_install_priorities(self, mock_check_call):
-        main._install_priorities()
-        mock_check_call.assert_called_once_with(['yum', 'install', '-y',
-                                                 'yum-plugin-priorities'])
-
-    @mock.patch('subprocess.check_call')
-    def test_install_priorities_fails(self, mock_check_call):
-        mock_check_call.side_effect = subprocess.CalledProcessError(88, '88')
-        self.assertRaises(subprocess.CalledProcessError,
-                          main._install_priorities)
+        self.assertEqual('http://trunk.rdoproject.org/centos9-master/', path)
 
     @mock.patch('repo_setup.main._get_repo')
     @mock.patch('repo_setup.main._write_repo')
@@ -153,26 +106,6 @@ class TestTripleORepos(testtools.TestCase):
         args = mock.Mock()
         args.repos = ['current']
         args.branch = 'master'
-        args.output_path = 'test'
-        args.distro = 'fake'
-        mock_get.return_value = '[delorean]\nMr. Fusion'
-        main._install_repos(args, 'roads/')
-        self.assertEqual([mock.call('roads/current/delorean.repo', args),
-                          mock.call('roads/delorean-deps.repo', args),
-                          ],
-                         mock_get.mock_calls)
-        self.assertEqual([mock.call('[delorean]\nMr. Fusion', 'test',
-                                    name='delorean'),
-                          mock.call('[delorean]\nMr. Fusion', 'test'),
-                          ],
-                         mock_write.mock_calls)
-
-    @mock.patch('repo_setup.main._get_repo')
-    @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_current_mitaka(self, mock_write, mock_get):
-        args = mock.Mock()
-        args.repos = ['current']
-        args.branch = 'mitaka'
         args.output_path = 'test'
         args.distro = 'fake'
         mock_get.return_value = '[delorean]\nMr. Fusion'
@@ -223,30 +156,6 @@ class TestTripleORepos(testtools.TestCase):
 
     @mock.patch('repo_setup.main._get_repo')
     @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_current_podified_dev(self, mock_write, mock_get):
-        args = mock.Mock()
-        args.repos = ['current-podified-dev']
-        args.branch = 'master'
-        args.output_path = 'test'
-        args.distro = 'fake'
-        mock_get.return_value = '[delorean]\nMr. Fusion'
-        main._install_repos(args, 'roads/')
-        mock_get.assert_any_call('roads/delorean-deps.repo', args)
-        # This is the wrong name for the deps repo, but I'm not bothered
-        # enough by that to mess with mocking multiple different calls.
-        mock_write.assert_any_call('[delorean]\nMr. Fusion', 'test')
-        mock_get.assert_any_call('roads/current-podified/delorean.repo', args)
-        mock_write.assert_any_call('[delorean-current-podified]\n'
-                                   'priority=20\nMr. Fusion', 'test',
-                                   name='delorean-current-podified')
-        mock_get.assert_called_with('roads/current/delorean.repo', args)
-        mock_write.assert_called_with('[delorean]\npriority=10\n%s\n'
-                                      'Mr. Fusion' %
-                                      main.INCLUDE_PKGS, 'test',
-                                      name='delorean')
-
-    @mock.patch('repo_setup.main._get_repo')
-    @mock.patch('repo_setup.main._write_repo')
     def test_install_repos_podified_ci_testing(self, mock_write, mock_get):
         args = mock.Mock()
         args.repos = ['podified-ci-testing']
@@ -265,28 +174,7 @@ class TestTripleORepos(testtools.TestCase):
                           ],
                          mock_write.mock_calls)
 
-    @mock.patch('repo_setup.main._get_repo')
-    @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_current_podified_rdo(self, mock_write, mock_get):
-        args = mock.Mock()
-        args.repos = ['current-podified-rdo']
-        args.branch = 'master'
-        args.output_path = 'test'
-        args.distro = 'fake'
-        mock_get.return_value = '[delorean]\nMr. Fusion'
-        main._install_repos(args, 'roads/')
-        self.assertEqual([mock.call('roads/current-podified-rdo/delorean.repo',
-                                    args),
-                          mock.call('roads/delorean-deps.repo', args),
-                          ],
-                         mock_get.mock_calls)
-        self.assertEqual([mock.call('[delorean]\nMr. Fusion', 'test'),
-                          mock.call('[delorean]\nMr. Fusion', 'test'),
-                          ],
-                         mock_write.mock_calls)
-
-    @ddt.data('liberty', 'mitaka', 'newton', 'ocata', 'pike', 'queens',
-              'rocky', 'stein', 'master')
+    @ddt.data('antelope', 'master')
     @mock.patch('repo_setup.main._write_repo')
     @mock.patch('repo_setup.main._create_ceph')
     def test_install_repos_ceph(self,
@@ -294,17 +182,7 @@ class TestTripleORepos(testtools.TestCase):
                                 mock_create_ceph,
                                 mock_write_repo):
         ceph_release = {
-            'liberty': 'hammer',
-            'mitaka': 'hammer',
-            'newton': 'jewel',
-            'ocata': 'jewel',
-            'pike': 'jewel',
-            'queens': 'luminous',
-            'rocky': 'luminous',
-            'stein': 'nautilus',
-            'train': 'nautilus',
-            'ussuri': 'nautilus',
-            'victoria': 'nautilus',
+            'antelope': 'pacific',
             'master': 'pacific',
         }
         args = mock.Mock()
@@ -312,68 +190,11 @@ class TestTripleORepos(testtools.TestCase):
         args.branch = branch
         args.output_path = 'test'
         args.distro = 'fake'
-        mock_repo = '[centos-ceph-luminous]\nMr. Fusion'
+        mock_repo = '[centos-ceph-pacific]\nMr. Fusion'
         mock_create_ceph.return_value = mock_repo
         main._install_repos(args, 'roads/')
         mock_create_ceph.assert_called_once_with(args, ceph_release[branch])
         mock_write_repo.assert_called_once_with(mock_repo, 'test')
-
-    @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_opstools(self, mock_write):
-        args = mock.Mock()
-        args.repos = ['opstools']
-        args.branch = 'master'
-        args.output_path = 'test'
-        args.mirror = 'http://foo'
-        args.distro = 'fake'
-        main._install_repos(args, 'roads/')
-        expected_repo = ('\n[repo-setup-centos-opstools]\n'
-                         'name=repo-setup-centos-opstools\n'
-                         'baseurl=http://foo/centos/7/opstools/$basearch/\n'
-                         'gpgcheck=0\n'
-                         'enabled=1\n')
-        mock_write.assert_called_once_with(expected_repo,
-                                           'test')
-
-    @mock.patch('requests.get')
-    @mock.patch('repo_setup.main._write_repo')
-    def test_install_repos_deps_mirror(self, mock_write, mock_get):
-        args = mock.Mock()
-        args.repos = ['deps']
-        args.branch = 'master'
-        args.output_path = 'test'
-        args.old_mirror = 'http://mirror.centos.org'
-        args.mirror = 'http://foo'
-        args.distro = 'centos7'
-        args.rdo_mirror = 'http://bar'
-        # Abbreviated repos to verify the regex works
-        fake_repo = '''
-[delorean-current-podified]
-name=test repo
-baseurl=https://trunk.rdoproject.org/centos7/some-repo-hash
-enabled=1
-
-[rdo-qemu-ev]
-name=test qemu-ev
-baseurl=http://mirror.centos.org/centos/7/virt/$basearch/kvm-common
-enabled=1
-'''
-        expected_repo = '''
-[delorean-current-podified]
-name=test repo
-baseurl=http://bar/centos7/some-repo-hash
-enabled=1
-
-[rdo-qemu-ev]
-name=test qemu-ev
-baseurl=http://foo/centos/7/virt/$basearch/kvm-common
-enabled=1
-'''
-        mock_get.return_value = mock.Mock(text=fake_repo,
-                                          status_code=200)
-        main._install_repos(args, 'roads/')
-        mock_write.assert_called_once_with(expected_repo,
-                                           'test')
 
     def test_install_repos_invalid(self):
         args = mock.Mock()
@@ -545,23 +366,23 @@ enabled=1
 
     def test_parse_args(self):
         with mock.patch.object(sys, 'argv', ['', 'current', 'deps', '-d',
-                                             'centos7', '-b', 'liberty',
+                                             'centos9', '-b', 'master',
                                              '-o', 'test']):
             args = main._parse_args('centos', '8')
         self.assertEqual(['current', 'deps'], args.repos)
-        self.assertEqual('centos7', args.distro)
-        self.assertEqual('liberty', args.branch)
+        self.assertEqual('centos9', args.distro)
+        self.assertEqual('master', args.branch)
         self.assertEqual('test', args.output_path)
 
     def test_parse_args_long(self):
         with mock.patch.object(sys, 'argv', ['', 'current', '--distro',
-                                             'centos7', '--branch',
-                                             'mitaka', '--output-path',
+                                             'centos9', '--branch',
+                                             'master', '--output-path',
                                              'test']):
             args = main._parse_args('centos', '8')
         self.assertEqual(['current'], args.repos)
-        self.assertEqual('centos7', args.distro)
-        self.assertEqual('mitaka', args.branch)
+        self.assertEqual('centos9', args.distro)
+        self.assertEqual('master', args.branch)
         self.assertEqual('test', args.output_path)
 
     def test_change_priority(self):
@@ -576,12 +397,6 @@ enabled=1
         data = "[repo1]\n[repo2]\n"
         expected = "[repo1]\n{0}\n[repo2]\n{0}\n".format("priority=10")
         result = main._change_priority(data, 10)
-        self.assertEqual(expected, result)
-
-    def test_add_includepkgs(self):
-        data = "[repo1]\n[repo2]"
-        expected = "[repo1]\n{0}\n[repo2]\n{0}".format(main.INCLUDE_PKGS)
-        result = main._add_includepkgs(data)
         self.assertEqual(expected, result)
 
     def test_create_ceph(self):
@@ -611,21 +426,21 @@ enabled=1
         start_repo = '''
 [delorean]
 name=delorean
-baseurl=https://trunk.rdoproject.org/centos7/some-repo-hash
+baseurl=https://trunk.rdoproject.org/centos9/some-repo-hash
 enabled=1
 [centos]
 name=centos
-baseurl=http://mirror.centos.org/centos/7/virt/$basearch/kvm-common
+baseurl=http://mirror.centos.org/centos/9/virt/$basearch/kvm-common
 enabled=1
 '''
         expected = '''
 [delorean]
 name=delorean
-baseurl=http://bar/centos7/some-repo-hash
+baseurl=http://bar/centos9/some-repo-hash
 enabled=1
 [centos]
 name=centos
-baseurl=http://foo/centos/7/virt/$basearch/kvm-common
+baseurl=http://foo/centos/9/virt/$basearch/kvm-common
 enabled=1
 '''
         mock_args = mock.Mock(mirror='http://foo',
@@ -639,7 +454,7 @@ enabled=1
         start_repo = '''
 [delorean]
 name=delorean
-baseurl=https://trunk.rdoproject.org/centos7/some-repo-hash
+baseurl=https://trunk.rdoproject.org/centos9/some-repo-hash
 enabled=1
 [rhel]
 name=rhel
@@ -649,7 +464,7 @@ enabled=1
         expected = '''
 [delorean]
 name=delorean
-baseurl=http://bar/centos7/some-repo-hash
+baseurl=http://bar/centos9/some-repo-hash
 enabled=1
 [rhel]
 name=rhel
@@ -667,7 +482,7 @@ enabled=1
         start_repo = '''
 [delorean]
 name=delorean
-baseurl=https://some.mirror.com/centos7/some-repo-hash
+baseurl=https://some.mirror.com/centos9/some-repo-hash
 enabled=1
 '''
         mock_args = mock.Mock(rdo_mirror='http://some.mirror.com',
@@ -678,20 +493,9 @@ enabled=1
                                                           mock_args))
 
     @mock.patch('subprocess.check_call')
-    def test_run_pkg_clean(self, mock_check_call):
-        main._run_pkg_clean('centos7')
-        mock_check_call.assert_called_once_with(['yum', 'clean', 'metadata'])
-
-    @mock.patch('subprocess.check_call')
     def test_run_pkg_clean_fedora(self, mock_check_call):
         main._run_pkg_clean('fedora')
         mock_check_call.assert_called_once_with(['dnf', 'clean', 'metadata'])
-
-    @mock.patch('subprocess.check_call')
-    def test_run_pkg_clean_fails(self, mock_check_call):
-        mock_check_call.side_effect = subprocess.CalledProcessError(88, '88')
-        self.assertRaises(subprocess.CalledProcessError,
-                          main._run_pkg_clean, ['centos7'])
 
 
 class TestValidate(testtools.TestCase):
@@ -700,8 +504,8 @@ class TestValidate(testtools.TestCase):
         self.args = mock.Mock()
         self.args.repos = ['current']
         self.args.branch = 'master'
-        self.args.distro = 'centos7'
-        self.distro_major_version_id = "7"
+        self.args.distro = 'centos9'
+        self.distro_major_version_id = "9"
         self.args.stream = False
         self.args.no_stream = False
 
@@ -718,17 +522,8 @@ class TestValidate(testtools.TestCase):
         self.assertRaises(main.InvalidArguments, main._validate_args,
                           self.args, '', '')
 
-    def test_podified_ci_testing_and_ceph_opstools_allowed(self):
-        self.args.repos = ['ceph', 'opstools', 'podified-ci-testing']
-        main._validate_args(self.args, '', '')
-
     def test_podified_ci_testing_and_deps_allowed(self):
         self.args.repos = ['deps', 'podified-ci-testing']
-        main._validate_args(self.args, '', '')
-
-    def test_ceph_and_podified_dev(self):
-        self.args.repos = ['current-podified-dev', 'ceph']
-        self.args.output_path = main.DEFAULT_OUTPUT_PATH
         main._validate_args(self.args, '', '')
 
     def test_deps_and_podified_dev(self):
@@ -765,9 +560,3 @@ class TestValidate(testtools.TestCase):
 
     def test_validate_distro_repos(self):
         self.assertTrue(main._validate_distro_repos(self.args))
-
-    def test_validate_distro_repos_fedora_podified_dev(self):
-        self.args.distro = 'fedora'
-        self.args.repos = ['current-podified-dev']
-        self.assertRaises(main.InvalidArguments, main._validate_distro_repos,
-                          self.args)

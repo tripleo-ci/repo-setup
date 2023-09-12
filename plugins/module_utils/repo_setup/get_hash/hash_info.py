@@ -168,7 +168,6 @@ class HashInfo:
         this HashInfo object. The only passed parameter is the
         dlrn_url. There are three main cases:
             * centos8/rhel8 component https://trunk.rdoproject.org/centos8/component/common/current-podified/commit.yaml
-            * centos7 https://trunk.rdoproject.org/centos7/current-podified/commit.yaml
             * centos8/rhel8 non component https://trunk.rdoproject.org/centos8/current-podified/delorean.repo.md5
         Returns a string which is the full URL to the required item (i.e.
         commit.yaml or repo.md5 depending on the case).
@@ -177,14 +176,7 @@ class HashInfo:
         :returns string URL to required commit.yaml or repo.md5
         """  # noqa
         repo_url = ""
-        if "centos7" in self.os_version:
-            repo_url = "%s/%s-%s/%s/commit.yaml" % (
-                dlrn_url,
-                self.os_version,
-                self.release,
-                self.tag,
-            )
-        elif self.component is not None:
+        if self.component is not None:
             repo_url = "%s/%s-%s/component/%s/%s/commit.yaml" % (
                 dlrn_url,
                 self.os_version,
