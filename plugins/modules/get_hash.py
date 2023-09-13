@@ -43,6 +43,12 @@ options:
         required: false
         type: str
         default: https://trunk.rdoproject.org
+    dlrn_hash_tag:
+        description: The DLRN hash to get queries about
+        required: false
+        type: str
+        default: None
+
 
 author:
     - Marios Andreou (@marios)
@@ -108,6 +114,8 @@ def run_module():
         dlrn_url=dict(
             type="str", required=False, default="https://trunk.rdoproject.org"
         ),
+        dlrn_hash_tag=dict(type="str", required=False, default=None),
+
     )
 
     module = AnsibleModule(argument_spec, supports_check_mode=False)

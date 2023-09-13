@@ -226,6 +226,10 @@ def _parse_args(distro_id, distro_major_version_id):
         default=DEFAULT_RDO_MIRROR,
         help="Server from which to install RDO packages.",
     )
+    parser.add_argument(
+        "--dlrn-hash-tag",
+        help="Generate DLRN repos using specific dlrn tag",
+    )
     stream_group = parser.add_mutually_exclusive_group()
     stream_group.add_argument(
         "--stream",
@@ -497,6 +501,23 @@ def _get_rhel_trunk_candidate_repos(args, base_path):
     return content
 
 
+def _get_dlrn_hash_tag(args, repo):
+    if args.dlrn_hash_tag:
+        # If repo name is current/delorean.repo and
+        # dlrn_hash_tag is b6e71147e9ec7234501c50f94860c58d
+        # then returned repo value would be
+        # current/b6/e7/b6e71147e9ec7234501c50f94860c58d/delorean.repo
+        if repo.endswith('delorean.repo'):
+            _data = repo.split('/')
+            _hash = args.dlrn_hash_tag
+            repo = "{}/{}/{}/{}/{}".format(_data[0],
+                                           _hash[:2],
+                                           _hash[2:4],
+                                           _hash,
+                                           _data[1])
+    return repo
+
+
 def _install_repos(args, base_path):
     def install_deps(args, base_path):
         if 'rhel' in args.distro:
@@ -508,17 +529,17 @@ def _install_repos(args, base_path):
 
     for repo in args.repos:
         if repo == "current":
-            content = _get_repo(base_path + "current/delorean.repo", args)
+            content = _get_repo(base_path + _get_dlrn_hash_tag(args, "current/delorean.repo"), args)
             _write_repo(content, args.output_path, name="delorean")
             install_deps(args, base_path)
         elif repo == "deps":
             install_deps(args, base_path)
         elif repo == "current-podified":
-            content = _get_repo(base_path + "current-podified/delorean.repo", args)
+            content = _get_repo(base_path + _get_dlrn_hash_tag(args, "current-podified/delorean.repo"), args)
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
         elif repo == "podified-ci-testing":
-            content = _get_repo(base_path + "podified-ci-testing/delorean.repo", args)
+            content = _get_repo(base_path + _get_dlrn_hash_tag(args, "podified-ci-testing/delorean.repo"), args)
             _write_repo(content, args.output_path)
             install_deps(args, base_path)
         elif repo == "ceph":
