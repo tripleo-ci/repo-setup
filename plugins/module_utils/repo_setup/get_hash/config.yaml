@@ -10,6 +10,7 @@ repo_setup_releases:
   - osp18
 
 repo_setup_ci_components:
+  - barbican
   - baremetal
   - cinder
   - clients
@@ -17,10 +18,10 @@ repo_setup_ci_components:
   - common
   - compute
   - glance
+  - keystone
   - manila
   - network
   - octavia
-  - security
   - swift
   - tempest
   - podified
@@ -36,7 +37,5 @@ rdo_named_tags:
   - current-podified
 
 os_versions:
-  - centos8
   - centos9
-  - rhel8
   - rhel9
