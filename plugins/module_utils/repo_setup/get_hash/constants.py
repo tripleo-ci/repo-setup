@@ -60,6 +60,7 @@ DEFAULT_CONFIG = {
         "cloudops",
         "common",
         "compute",
+        "designate",
         "glance",
         "manila",
         "network",

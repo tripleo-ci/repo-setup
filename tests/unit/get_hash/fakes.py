@@ -64,6 +64,7 @@ repo_setup_ci_components:
   - cloudops
   - common
   - compute
+  - designate
   - glance
   - manila
   - network
