@@ -1,9 +1,11 @@
 approvers:
-- rlandy
-- raukadah
-- viroel
+- bshewale
+- frenzyfriday
+- lewisdenny
+- pablintino
 options: {}
 reviewers:
-- rlandy
-- raukadah
-- viroel
+- bshewale
+- frenzyfriday
+- lewisdenny
+- pablintino
